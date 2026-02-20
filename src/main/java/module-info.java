@@ -1,6 +1,8 @@
 module com.example.happyfood {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.graphics;
+    requires java.desktop;
 
 
     opens com.example.happyfood to javafx.fxml;
