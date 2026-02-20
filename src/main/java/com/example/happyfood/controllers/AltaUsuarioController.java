@@ -1,4 +1,4 @@
-package com.example.happyfood;
+package com.example.happyfood.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
