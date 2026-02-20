@@ -1,6 +1,5 @@
 package com.example.happyfood.controllers;
 
-import com.example.happyfood.LoginController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
