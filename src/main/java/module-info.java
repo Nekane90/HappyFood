@@ -1,7 +1,12 @@
 module com.example.happyfood {
     requires javafx.controls;
     requires javafx.fxml;
+<<<<<<< HEAD
     requires org.controlsfx.controls;
+=======
+    requires javafx.graphics;
+    requires java.desktop;
+>>>>>>> ramaPrincipal
 
 
     opens com.example.happyfood to javafx.fxml;
