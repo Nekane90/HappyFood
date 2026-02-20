@@ -1,18 +1,18 @@
-package com.example.happyfood;
+package com.example.happyfood.controllers;
 
-import javafx.application.Application;
+import com.example.happyfood.LoginController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class LoginController extends Application {
-    @Override
+public class PrincipalController {
+
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource("/com/example/happyfood/login.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource("/com/example/happyfood/principal.fmxl"));
         Scene scene = new Scene(fxmlLoader.load(), 650, 450);
-        stage.setTitle("Bienvenid@");
+        stage.setTitle("Principal");
         stage.setScene(scene);
         stage.show();
     }
