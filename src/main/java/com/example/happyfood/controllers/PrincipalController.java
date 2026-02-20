@@ -1,5 +1,6 @@
 package com.example.happyfood.controllers;
 
+<<<<<<< HEAD
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -15,4 +16,7 @@ public class PrincipalController {
         stage.setScene(scene);
         stage.show();
     }
+=======
+public class PrincipalController {
+>>>>>>> ramaPrincipal
 }
