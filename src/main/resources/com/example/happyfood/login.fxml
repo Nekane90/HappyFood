@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.LoginController">
+   <children>
+      <VBox alignment="CENTER" fillWidth="false" layoutX="82.0" layoutY="21.0" prefHeight="365.0" prefWidth="778.0" style="-fx-background-color: #A3D1C9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView id="imgLogo" fitHeight="153.0" fitWidth="186.0" pickOnBounds="true" preserveRatio="true">
+               <VBox.margin>
+                  <Insets left="430.0" />
+               </VBox.margin>
+               <image>
+                  <Image url="@../../../imagenes/logo.png" />
+               </image>
+            </ImageView>
+            <Label id="lbTitulo" fx:id="lbTitulo" alignment="CENTER" prefHeight="44.0" prefWidth="443.0" text="Bienvenid@ " textAlignment="CENTER">
+               <font>
+                  <Font size="40.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="-95.0" />
+               </VBox.margin>
+            </Label>
+            <Label id="lbNombreUsuario" fx:id="lbNombreUsuario" alignment="CENTER" prefHeight="30.0" prefWidth="145.0" text="Nombre de Usuario">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Label>
+            <TextField id="tfPassword" fx:id="tfNombreUsuario" prefHeight="24.0" prefWidth="200.0">
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
+            </TextField>
+            <Label id="lbPassword" fx:id="lbPassword" text="Password">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Label>
+            <TextField id="tfNombreUsuario" fx:id="tfPassword" prefHeight="24.0" prefWidth="200.0">
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin></TextField>
+            <Hyperlink id="hlRegistrate" fx:id="hlRegistrate" text="Regístrate aqui" underline="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
+            </Hyperlink>
+            <Button id="btAcceder" fx:id="btAcceder" mnemonicParsing="false" prefHeight="37.0" prefWidth="104.0" text="Acceder">
+               <VBox.margin>
+                  <Insets bottom="40.0" top="20.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
