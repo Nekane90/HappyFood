@@ -1,14 +1,18 @@
 package com.example.happyfood.controllers;
 
-import javafx.application.Application;
+import com.example.happyfood.conexion.ConexionDB;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
+import javafx.scene.control.TextField;
+import java.awt.*;
 import java.io.IOException;
+import java.sql.*;
 
 <<<<<<< HEAD
 public class LoginController extends Application {
@@ -21,12 +25,18 @@ public class LoginController extends Application {
         stage.show();
 =======
 public class LoginController  {
+    @FXML
+    private TextField tfNombreUsuario;
+
+    @FXML
+    private PasswordField pfPassword;
 
 
     /// metodo que llama a la pantalla principal
     @FXML
     private void manejarBotonEntrar(ActionEvent event) {
         try {
+            comprobarUsuario();
             // 1. Cargo el nuevo FXML del Menú Principal
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/principal.fxml"));
             Parent root = loader.load();
@@ -37,13 +47,16 @@ public class LoginController  {
             // 3. Creo la nueva escena con el FXML cargado y la pongo en la ventana
             //aqui le pongo las medidas que quiero que tenga la pantalla
             Scene scene = new Scene(root,1200, 700);
+
+            //aqui carga el estilos.css
+            scene.getStylesheets().add(getClass().getResource("/com/example/happyfood/estilos.css").toExternalForm());
             stage.setTitle("Mi Menú");
             stage.setScene(scene);
             /// aqui estoy centrando la pantalla
             stage.centerOnScreen();
             stage.show();
             // esto es por si se quiere poner que la pantalla ocupe toda la pantalla del pc
-            //stage.setMaximized(true);
+            stage.setMaximized(true);
             //esto es por si quieres que se pueda maximizar y minizar con el raton estirando la pantalla
             //stage.setResizable(true);
 
@@ -51,6 +64,37 @@ public class LoginController  {
             System.err.println("Error: No se pudo cargar el menú principal. Revisa la ruta.");
         }
 >>>>>>> ramaPrincipal
+    }
+
+    private void comprobarUsuario() {
+        Connection con = ConexionDB.conectar();
+
+        if (con == null) {
+            System.err.println("🛑 No se puede comprobar usuario porque la conexión falló.");
+            return;
+        }
+        String nombreUsuario = tfNombreUsuario.getText();
+        String password = pfPassword.getText();
+
+        try {
+            String sql = "SELECT * FROM usuarios WHERE nombre_usuario = ? AND password = ?";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, nombreUsuario);
+            stmt.setString(2, password);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("✅ Login correcto. Bienvenido: " + rs.getString("nombre_usuario"));
+                // Aquí navegas a la siguiente pantalla
+            } else {
+                System.out.println("❌ Nombre de usuario o contraseña incorrectos.");
+                // Aquí muestras un mensaje de error al usuario
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 

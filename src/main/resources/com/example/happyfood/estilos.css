@@ -16,8 +16,6 @@
     -fx-background-color: #A3D1C9; /* El color de tu fondo original */
     -fx-scale-x: 0.95; /* Se encoge un poquito, da sensación de botón real */
     -fx-scale-y: 0.95;
-<<<<<<< HEAD
-=======
 }
 
 .scroll-pane {
@@ -28,5 +26,22 @@
 
 .scroll-pane > .viewport {
     -fx-background-color: transparent;
->>>>>>> ramaPrincipal
+}
+
+/* Estilo para los días de la tabla Menu (arriba) */
+.titulo-grid {
+    -fx-font-weight: bold;
+    -fx-text-fill: #78B0A5;
+    -fx-font-size: 20px;
+    -fx-padding: 10;
+    -fx-alignment: center;
+}
+
+/* Estilo para las categorías de la tabla Menu (izquierda) */
+.titulo-categoria {
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+    -fx-padding: 10;
+    -fx-background-radius: 5;
+    -fx-font-size:20px;
 }

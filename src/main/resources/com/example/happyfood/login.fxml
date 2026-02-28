@@ -34,7 +34,7 @@
                   <Insets top="20.0" />
                </VBox.margin>
             </Label>
-            <TextField id="tfPassword" fx:id="tfNombreUsuario" prefHeight="24.0" prefWidth="200.0">
+            <TextField id="tfNombre" fx:id="tfNombreUsuario" prefHeight="24.0" prefWidth="200.0">
                <VBox.margin>
                   <Insets top="15.0" />
                </VBox.margin>
@@ -47,10 +47,11 @@
                   <Insets top="20.0" />
                </VBox.margin>
             </Label>
-            <TextField id="tfNombreUsuario" fx:id="tfPassword" prefHeight="24.0" prefWidth="200.0">
+            <PasswordField fx:id="pfPassword" prefHeight="24.0" prefWidth="200.0">
                <VBox.margin>
                   <Insets top="15.0" />
-               </VBox.margin></TextField>
+               </VBox.margin>
+            </PasswordField>
             <Hyperlink id="hlRegistrate" fx:id="hlRegistrate" text="Regístrate aqui" underline="true">
                <font>
                   <Font size="16.0" />

@@ -20,21 +20,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="619.0" prefWidth="1045.0" style="-fx-background-color: #A3D1C9;" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.PrincipalController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="619.0" prefWidth="1045.0" style="-fx-background-color: #A3D1C9;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.PrincipalController">
    <top>
-      <HBox prefHeight="107.0" prefWidth="991.0" stylesheets="@estilos.css" BorderPane.alignment="CENTER">
+      <HBox prefHeight="107.0" prefWidth="991.0" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="138.0" fitWidth="265.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../imagenes/MI_MENU-removebg-preview.png" />
-               </image>
+            <Label alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="102.0" prefWidth="312.0" text="Mi Menú" textAlignment="CENTER" textFill="#ff4b3e">
+               <font>
+                  <Font name="JetBrains Mono ExtraBold" size="45.0" />
+               </font>
                <HBox.margin>
-                  <Insets left="400.0" />
+                  <Insets bottom="20.0" left="600.0" top="20.0" />
                </HBox.margin>
-            </ImageView>
+            </Label>
             <ImageView id="imgLogo" fitHeight="138.0" fitWidth="210.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
-                  <Insets left="350.0" />
+                  <Insets left="500.0" />
                </HBox.margin>
                <image>
                   <Image url="@../../../imagenes/logo.png" />
@@ -46,9 +46,9 @@
    <center>
       <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
          <content>
-            <VBox alignment="CENTER" prefHeight="316.0" prefWidth="900.0">
+            <VBox alignment="CENTER" prefHeight="316.0" prefWidth="900.0" stylesheets="@estilos.css">
                <children>
-                  <GridPane hgap="20.0" vgap="50.0">
+                  <GridPane id="gpMenu" fx:id="gpMenu" alignment="CENTER" hgap="20.0" stylesheets="@estilos.css" vgap="100.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
