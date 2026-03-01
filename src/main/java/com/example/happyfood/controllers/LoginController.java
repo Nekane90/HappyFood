@@ -88,6 +88,26 @@ public class LoginController  {
         }
     }
 
+    @FXML
+    public void llamadapantallaAlta(ActionEvent event) {
+        try {
+            // 1. Cargar el archivo FXML de la pantalla de alta
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/alltaUsuario.fxml"));
+            Parent root = loader.load();
 
+            // 2. Obtener la ventana actual (Stage)
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root, 650, 550);
+
+
+            stage.setScene(scene);
+            stage.setTitle("Registro de Usuario - HappyFood");
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("Error: No se pudo cargar la pantalla de registro.");
+            e.printStackTrace();
+        }
+    }
 
 }

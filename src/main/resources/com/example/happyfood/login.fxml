@@ -52,7 +52,7 @@
                   <Insets top="15.0" />
                </VBox.margin>
             </PasswordField>
-            <Hyperlink id="hlRegistrate" fx:id="hlRegistrate" text="Regístrate aqui" underline="true">
+            <Hyperlink id="hlRegistrate" fx:id="hlRegistrate" text="Regístrate aqui" onAction="#llamadapantallaAlta" underline="true">
                <font>
                   <Font size="16.0" />
                </font>
