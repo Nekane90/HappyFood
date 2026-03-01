@@ -71,7 +71,7 @@
                   <Insets top="50.0" />
                </GridPane.margin>
             </PasswordField>
-            <Button mnemonicParsing="false" onAction="#volverLogin" text="I N G R E S A R" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+            <Button mnemonicParsing="false" onAction="#volverLogin" text="V O L V E R" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                <font>
                   <Font size="14.0" />
                </font>
