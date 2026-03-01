@@ -10,20 +10,11 @@ import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.scene.control.TextField;
-import java.awt.*;
+
 import java.io.IOException;
 import java.sql.*;
 
-<<<<<<< HEAD
-public class LoginController extends Application {
-    @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource("/com/example/happyfood/login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 650, 450);
-        stage.setTitle("Bienvenid@");
-        stage.setScene(scene);
-        stage.show();
-=======
+
 public class LoginController  {
     @FXML
     private TextField tfNombreUsuario;
@@ -63,7 +54,7 @@ public class LoginController  {
         } catch (IOException e) {
             System.err.println("Error: No se pudo cargar el menú principal. Revisa la ruta.");
         }
->>>>>>> ramaPrincipal
+
     }
 
     private void comprobarUsuario() {

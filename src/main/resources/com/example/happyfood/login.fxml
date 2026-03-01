@@ -60,8 +60,8 @@
                   <Insets top="15.0" />
                </VBox.margin>
             </Hyperlink>
-            <Button id="btAcceder" fx:id="btAcceder" mnemonicParsing="false" onAction="#manejarBotonEntrar" prefHeight="47.0" prefWidth="149.0" stylesheets="@estilos.css" text="Acceder">
-            <Button id="btAcceder" fx:id="btAcceder" mnemonicParsing="false" prefHeight="37.0" prefWidth="104.0" stylesheets="@estilos.css" text="Acceder">
+            <Button id="btAcceder" fx:id="btAcceder" mnemonicParsing="false" onAction="#manejarBotonEntrar" prefHeight="47.0" prefWidth="149.0" stylesheets="@estilos.css" text="Acceder" >
+
                <VBox.margin>
                   <Insets bottom="40.0" top="20.0" />
                </VBox.margin>
