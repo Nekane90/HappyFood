@@ -12,4 +12,7 @@ module com.example.happyfood {
 
     exports com.example.happyfood.controllers;
     opens com.example.happyfood.controllers to javafx.fxml;
+
+    requires com.google.gson;
+    requires java.net.http;
 }

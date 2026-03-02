@@ -52,7 +52,8 @@ public class LoginController  {
             //stage.setResizable(true);
 
         } catch (IOException e) {
-            System.err.println("Error: No se pudo cargar el menú principal. Revisa la ruta.");
+            //System.err.println("Error: No se pudo cargar el menú principal. Revisa la ruta.");
+            System.err.println("Error detalle: " + e.getMessage());
         }
 
     }
