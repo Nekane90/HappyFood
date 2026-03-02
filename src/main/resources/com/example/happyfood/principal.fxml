@@ -58,7 +58,7 @@
                         <VBox id="lunesDesayuno" fx:id="lunesDesayuno" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <VBox id="lunesComida" fx:id="lunesComida" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <VBox id="lunesCena" fx:id="lunesCena" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <VBox id="martesdesayuno" fx:id="martesdesayuno" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <VBox id="martesDesayuno" fx:id="martesDesayuno" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         <VBox id="martesComida" fx:id="martesComida" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <VBox id="martesCena" fx:id="martesCena" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                         <VBox id="miercolesDesayuno" fx:id="miercolesDesayuno" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="3" GridPane.rowIndex="1" />
@@ -67,7 +67,7 @@
                         <VBox id="juevesDesayuno" fx:id="juevesDesayuno" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                         <VBox id="juevesComida" fx:id="juevesComida" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                         <VBox id="juevesCena" fx:id="juevesCena" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                        <VBox id="viernesDesyauno" fx:id="viernesDesyauno" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                        <VBox id="viernesDesayuno" fx:id="viernesDesayuno" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                         <VBox id="viernesComida" fx:id="viernesComida" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="5" GridPane.rowIndex="2" />
                         <VBox id="viernesCena" fx:id="viernesCena" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="5" GridPane.rowIndex="3" />
                         <VBox id="sabadoDesayuno" fx:id="sabadoDesayuno" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="vbox-celda" GridPane.columnIndex="6" GridPane.rowIndex="1" />
@@ -89,7 +89,7 @@
    <bottom>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Button id="btCargarMenu" fx:id="btCargarMenu" alignment="CENTER" mnemonicParsing="false" onAction="#manejarBotonBuscar" prefHeight="59.0" prefWidth="200.0" text="Cargar Menú">
+            <Button id="btCargarMenu" fx:id="btCargarMenu" alignment="CENTER" mnemonicParsing="false" onAction="#onBotonGenerarClick" prefHeight="59.0" prefWidth="200.0" text="Cargar Menú">
                <font>
                   <Font size="20.0" />
                </font>

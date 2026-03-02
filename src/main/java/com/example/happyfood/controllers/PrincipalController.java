@@ -68,8 +68,6 @@ public class PrincipalController  {
     private VBox domingoCena;
 
 
-
-
     @FXML
     public void initialize() {
         configurarTitulos();
@@ -203,8 +201,89 @@ public class PrincipalController  {
             System.out.println("Error en el método de celda: " + e.getMessage());
         }
     }
+            /// para probar sin usar la api
+            public void procesarMenuCompleto(String jsonRespuesta) {
+                try {
+                    JsonObject data = JsonParser.parseString(jsonRespuesta).getAsJsonObject();
+                    JsonObject week = data.getAsJsonObject("week");
+
+                    String[] diasApi = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
+                    VBox[][] matrizInterfaz = obtenerMatrizCeldas();
+
+                    for (int i = 0; i < diasApi.length; i++) {
+                        System.out.println("Intentando llenar el día: " + diasApi[i]); // <--- AÑADE ESTO
+                        JsonObject diaJson = week.getAsJsonObject(diasApi[i]);
+                        String nombreDia = diasApi[i];
+                        diaJson = week.getAsJsonObject(nombreDia);
+
+                        if (diaJson != null) {
+                            JsonArray comidas = diaJson.getAsJsonArray("meals");
+
+                            for (int j = 0; j < 3; j++) {
+                                // --- AQUÍ EMPIEZA EL CAMBIO ---
 
 
+                                JsonObject receta = comidas.get(j).getAsJsonObject();
+
+                                // 1. Sacamos el Título con seguridad (si no existe, ponemos "Sin nombre")
+                                String titulo = "Receta sin nombre";
+                                if (receta.has("title") && !receta.get("title").isJsonNull()) {
+                                    titulo = receta.get("title").getAsString();
+                                }
+
+                                // 2. Sacamos la Imagen con seguridad
+                                String urlImg = "";
+                                if (receta.has("image") && !receta.get("image").isJsonNull()) {
+                                    urlImg = receta.get("image").getAsString();
+                                } else if (receta.has("id") && !receta.get("id").isJsonNull()) {
+                                    // Si no hay campo 'image', la construimos con el ID
+                                    urlImg = "https://spoonacular.com/recipeImages/" + receta.get("id").getAsString() + "-312x231.jpg";
+                                }
+
+                                // 3. Pintamos la celda (esto ya lo tenías)
+                                ponerRecetaEnCelda(matrizInterfaz[i][j], titulo, urlImg);
+
+                            }
+                        }
+                    }
+                    System.out.println("✅ ¡Menú semanal cargado con éxito!");
+
+                } catch (Exception e) {
+                    System.err.println("❌ Error crítico en el proceso: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+    ///mientras no puedo usar la api
+    private VBox[][] obtenerMatrizCeldas() {
+        // Agrupamos los VBox que ya tienes vinculados con @FXML
+        return new VBox[][] {
+                {lunesDesayuno,lunesComida, lunesCena},       // Día 0
+                {martesDesayuno, martesComida, martesCena},     // Día 1
+                {miercolesDesayuno, miercolesComida, miercolesCena}, // Día 2
+                {juevesDesayuno, juevesComida, juevesCena},     // Día 3
+                {viernesDesayuno, viernesComida, viernesCena},    // Día 4
+                {sabadoDesayuno, sabadoComida, sabadoCena},      // Día 5
+                {domingoDesayuno, domingoComida, domingoCena}    // Día 6
+        };
+    }
+    // esto es para probar xq no me puedo conectar a la api
+    @FXML
+    private void onBotonGenerarClick(ActionEvent event) {
+
+        String jsonSimulado = "{" +
+                "  'week': {" +
+                "    'monday': { 'meals': [{ 'title': 'Avena con Frutas', 'image': 'https://spoonacular.com/recipeImages/632660-312x231.jpg' }, { 'title': 'Lentejas Veganas', 'image': 'https://spoonacular.com/recipeImages/649931-312x231.jpg' }, { 'title': 'Ensalada de Quinoa', 'image': 'https://spoonacular.com/recipeImages/657698-312x231.jpg' }] }," +
+                "    'tuesday': { 'meals': [{ 'title': 'Tortilla de Espinacas', 'image': 'https://spoonacular.com/recipeImages/660405-312x231.jpg' }, { 'title': 'Pasta Integral', 'image': 'https://spoonacular.com/recipeImages/654883-312x231.jpg' }, { 'title': 'Sopa de Verduras', 'image': 'https://spoonacular.com/recipeImages/663157-312x231.jpg' }] }," +
+                "    'wednesday': { 'meals': [{ 'title': 'Pisto Manchego', 'image': 'https://spoonacular.com/recipeImages/660405-312x231.jpg' }, { 'title': 'Arroz con Pollo', 'image': 'https://spoonacular.com/recipeImages/654883-312x231.jpg' }, { 'title': 'Crema de Calabaza', 'image': 'https://spoonacular.com/recipeImages/663157-312x231.jpg' }] }," +
+                "    'thursday': { 'meals': [{ 'title': 'Batido Verde', 'image': '...' }, { 'title': 'Garbanzos', 'image': '...' }, { 'title': 'Pescado', 'image': '...' }] }," +
+                "    'friday': { 'meals': [{ 'title': 'Pan con Tomate', 'image': '...' }, { 'title': 'Filete', 'image': '...' }, { 'title': 'Pizza Saludable', 'image': '...' }] }," +
+                "    'saturday': { 'meals': [{ 'title': 'Pancakes', 'image': '...' }, { 'title': 'Hamburguesa Veggie', 'image': '...' }, { 'title': 'Tacos', 'image': '...' }] }," +
+                "    'sunday': { 'meals': [{ 'title': 'Fruta Mix', 'image': '...' }, { 'title': 'Paella', 'image': '...' }, { 'title': 'Sandwich', 'image': '...' }] }" +
+                "  }" +
+                "}";
+
+        procesarMenuCompleto(jsonSimulado);
+    }
 
 }
 

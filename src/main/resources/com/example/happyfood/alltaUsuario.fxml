@@ -41,7 +41,7 @@
                     <font><Font size="13.0" /></font>
                     <GridPane.margin><Insets left="50.0" top="-40.0" /></GridPane.margin>
                 </Label>
-                <TextField fx:id="txtEmail" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                     <GridPane.margin><Insets top="-40.0" /></GridPane.margin>
                 </TextField>
                 <Label text="Contraseña:" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
