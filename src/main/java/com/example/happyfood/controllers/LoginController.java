@@ -32,8 +32,6 @@ public class LoginController  {
     @FXML
     private void manejarBotonEntrar(ActionEvent event) {
             comprobarUsuario(event);
-
-
     }
 
     private void comprobarUsuario(ActionEvent event) {
@@ -56,6 +54,8 @@ public class LoginController  {
                 int id = rs.getInt("id");
                 String dieta = rs.getString("tipo_dieta");
                 String intoleranciasStr = rs.getString("intolerancias");
+                //String nombre = rs.getString("nombre_usuario");
+
 
                 List<String> listaAlergias = new ArrayList<>();
                 if (intoleranciasStr != null && !intoleranciasStr.isEmpty()) {
@@ -63,7 +63,7 @@ public class LoginController  {
                     listaAlergias = new ArrayList<>(Arrays.asList(intoleranciasStr.split(",")));
                 }
 
-                Sesion.setUsuario(new Usuario(id, listaAlergias, dieta));
+                Sesion.setUsuario(new Usuario(id, listaAlergias, dieta,nombreUsuario));
 
                 // CAMBIO DE PANTALLA ---
                 try {
@@ -74,7 +74,7 @@ public class LoginController  {
                     Scene scene = new Scene(root, 1200, 700);
 
                     scene.getStylesheets().add(getClass().getResource("/com/example/happyfood/estilos.css").toExternalForm());
-                    stage.setTitle("Mi Menú");
+                    stage.setTitle("Hola " +nombreUsuario);
                     stage.setScene(scene);
                     stage.centerOnScreen();
                     stage.setMaximized(true);
@@ -121,6 +121,7 @@ public class LoginController  {
         }
     }
 
+    //metodo para mostrar alerta (messagebox)
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setTitle(titulo);

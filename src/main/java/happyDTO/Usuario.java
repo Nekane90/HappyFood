@@ -19,10 +19,11 @@ public class Usuario {
         this.tipoDieta = tipoDieta;
     }
 
-    public Usuario (int id, List<String> intolerancias, String tipoDieta ){
+    public Usuario (int id, List<String> intolerancias, String tipoDieta,String nombreUsuario ){
         this.id = id;
         this.intolerancias = intolerancias;
         this.tipoDieta = tipoDieta;
+        this.nombreUsuario = nombreUsuario;
     }
 
 
