@@ -97,7 +97,7 @@ public class LoginController  {
 
             // 2. Obtener la ventana actual (Stage)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root, 650, 550);
+            Scene scene = new Scene(root, 700, 530);
 
 
             stage.setScene(scene);
