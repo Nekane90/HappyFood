@@ -69,3 +69,20 @@
    /* -fx-background-color: #f5f6fa; //color como grisaceo*/
     -fx-cursor: hand;
 }
+
+
+}
+/* boton de corazon ( favorito)*/
+.boton-corazon {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    /* Salimos de la carpeta del paquete para ir a la de imagenes */
+    -fx-graphic: url("/imagenes/corazon-contorno-rojo.png");
+    -fx-content-display: GRAPHIC_ONLY;
+}
+
+.boton-corazon:selected {
+    -fx-graphic: url("/imagenes/corazon-relleno-rojo.png");
+}
+

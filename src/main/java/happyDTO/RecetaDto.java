@@ -21,6 +21,16 @@ public class RecetaDto {
         this.idApi = idApi;
     }
 
+    public RecetaDto() {
+
+    }
+
+    public RecetaDto(String titulo, String urlImg, int idApi) {
+        this.titulo = titulo;
+        this.urlImagen = urlImg;
+        this.idApi = idApi;
+    }
+
     /// getters y setters
     public void setId(int id) {
         this.id = id;

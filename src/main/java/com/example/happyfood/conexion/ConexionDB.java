@@ -20,7 +20,6 @@ public class ConexionDB {
 
             Connection conexion = DriverManager.getConnection(URL, props);
             if (conexion != null) {
-                System.out.println("✅ ¡CONEXIÓN ESTABLECIDA!");
             }
             return conexion;
         } catch (Exception e) {
