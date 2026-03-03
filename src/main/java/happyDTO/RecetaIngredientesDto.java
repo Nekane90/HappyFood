@@ -1,13 +1,13 @@
 package happyDTO;
 
-public class RecetaIngredientes {
+public class RecetaIngredientesDto {
     private int idReceta;
     private int idIngrediente;
     private int cantidad;
     private String unidadMedida;
 
 
-public RecetaIngredientes(int idReceta, int idIngrediente, int cantidad, String unidadMedida){
+public RecetaIngredientesDto(int idReceta, int idIngrediente, int cantidad, String unidadMedida){
     this.idReceta = idReceta;
     this.idIngrediente = idIngrediente;
     this.cantidad = cantidad;

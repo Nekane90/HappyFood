@@ -1,11 +1,11 @@
 package happyDTO;
 
-public class Nevera {
+public class NeveraDto {
     private int idUsuario;
     private int idIngrediente;
     private int cantidadDisponible;
 
-    public Nevera(int idUsuario, int idIngrediente, int cantidadDisponible){
+    public NeveraDto(int idUsuario, int idIngrediente, int cantidadDisponible){
         this.idUsuario = idUsuario;
         this.idIngrediente = idIngrediente;
         this.cantidadDisponible = cantidadDisponible;

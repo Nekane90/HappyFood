@@ -1,11 +1,11 @@
 package happyDTO;
 
-public class Ingrediente {
+public class IngredienteDto {
     private int id;
     private String nombre;
     private String categoria;
 
-    public Ingrediente(int id, String nombre, String categoria){
+    public IngredienteDto(int id, String nombre, String categoria){
         this.id = id;
         this.nombre = nombre;
         this.categoria = categoria;

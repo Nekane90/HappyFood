@@ -1,12 +1,12 @@
 package happyDTO;
 
-public class Favorito {
+public class FavoritoDto {
 
     private int id;
     private int idUsuario;
     private int idReceta;
 
-    public Favorito(int id, int idUsuario, int idReceta){
+    public FavoritoDto(int id, int idUsuario, int idReceta){
         this.id = id;
         this.idUsuario = idUsuario;
         this.idReceta = idReceta;

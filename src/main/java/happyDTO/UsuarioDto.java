@@ -2,7 +2,7 @@ package happyDTO;
 
 import java.util.List;
 
-public class Usuario {
+public class UsuarioDto {
     private int id;
     private String nombreUsuario;
     private String email;
@@ -10,7 +10,7 @@ public class Usuario {
     private List<String> intolerancias;
     private String tipoDieta;
 
-    public Usuario(int id, String nombreUsuario, String email, String password, List<String> intolerancias, String tipoDieta){
+    public UsuarioDto(int id, String nombreUsuario, String email, String password, List<String> intolerancias, String tipoDieta){
         this.id = id;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
@@ -19,7 +19,7 @@ public class Usuario {
         this.tipoDieta = tipoDieta;
     }
 
-    public Usuario (int id, List<String> intolerancias, String tipoDieta,String nombreUsuario ){
+    public UsuarioDto(int id, List<String> intolerancias, String tipoDieta, String nombreUsuario ){
         this.id = id;
         this.intolerancias = intolerancias;
         this.tipoDieta = tipoDieta;

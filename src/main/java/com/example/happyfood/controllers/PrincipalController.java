@@ -2,14 +2,11 @@ package com.example.happyfood.controllers;
 
 
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import happyDTO.Usuario;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
@@ -17,9 +14,6 @@ import javafx.scene.control.Label;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
-
-
-import java.awt.*;
 
 
 public class PrincipalController  {

@@ -1,7 +1,7 @@
 package com.example.happyfood.controllers;
 
 import com.example.happyfood.conexion.ConexionDB;
-import happyDTO.Usuario;
+import happyDTO.UsuarioDto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -63,7 +63,7 @@ public class LoginController  {
                     listaAlergias = new ArrayList<>(Arrays.asList(intoleranciasStr.split(",")));
                 }
 
-                Sesion.setUsuario(new Usuario(id, listaAlergias, dieta,nombreUsuario));
+                Sesion.setUsuario(new UsuarioDto(id, listaAlergias, dieta,nombreUsuario));
 
                 // CAMBIO DE PANTALLA ---
                 try {

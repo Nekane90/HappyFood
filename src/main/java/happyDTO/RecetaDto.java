@@ -1,6 +1,6 @@
 package happyDTO;
 
-public class Receta {
+public class RecetaDto {
     private int id;
     private String titulo;
     private String instrucciones;
@@ -11,7 +11,7 @@ public class Receta {
 
     //constructor
 
-    public Receta(int id, String titulo, String instrucciones, int tiempoPreparacion, String dificultad, String urlImagen, int idApi ){
+    public RecetaDto(int id, String titulo, String instrucciones, int tiempoPreparacion, String dificultad, String urlImagen, int idApi ){
         this.id = id;
         this.titulo = titulo;
         this.instrucciones = instrucciones;

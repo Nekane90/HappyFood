@@ -2,7 +2,7 @@ package happyDTO;
 
 import java.util.Date;
 
-public class PlanificadorSemanal {
+public class PlanificadorSemanalDto {
 
     private int id;
     private int idUsuario;
@@ -10,7 +10,7 @@ public class PlanificadorSemanal {
     private Date fecha;
     private String tipoComida;//desatuno-comida-cena
 
-    public PlanificadorSemanal(int id, int idUsuario, int idReceta, Date fecha, String tipoComida){
+    public PlanificadorSemanalDto(int id, int idUsuario, int idReceta, Date fecha, String tipoComida){
         this.id = id;
         this.idUsuario = idUsuario;
         this.idReceta = idReceta;
