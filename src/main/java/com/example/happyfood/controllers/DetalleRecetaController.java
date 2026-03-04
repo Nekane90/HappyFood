@@ -24,6 +24,7 @@ public class DetalleRecetaController {
     /// metodo que carga la receta con su imagen
     public void initData(String titulo, String urlImg, JsonObject recetaJson) {
         lbTitulo.setText(titulo);
+        System.out.println("Intentando cargar imagen en: " + imgReceta);
 
         if (urlImg != null && !urlImg.isEmpty()) {
             try {

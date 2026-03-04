@@ -489,11 +489,18 @@ public class PrincipalController {
 
             // 4. Crear el escenario (Stage) y mostrarlo
             Stage stage = new Stage();
+            Scene scene = new Scene(root, 1200, 700);
+            scene.getStylesheets().add(getClass().getResource("/com/example/happyfood/estilos.css").toExternalForm());
+
             stage.setTitle("Preparación: " + titulo);
-            stage.setScene(new Scene(root));
+            stage.setScene(scene);
+            stage.centerOnScreen();
+            stage.setMaximized(true);
             // Hacerla modal
-            stage.initModality(Modality.APPLICATION_MODAL);
+            //stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
+
+
 
         } catch (IOException e) {
             System.err.println("Error al cargar la ventana de detalle: " + e.getMessage());

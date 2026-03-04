@@ -5,8 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="578.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.DetalleRecetaController" >
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="617.0" prefWidth="889.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.DetalleRecetaController">
    <top>
       <Label id="lbTitulo" fx:id="lbTitulo" prefHeight="57.0" prefWidth="124.0" stylesheets="@estilos.css" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -17,11 +16,14 @@
    <left>
       <ImageView id="imgReceta" fx:id="imgReceta" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
          <BorderPane.margin>
-            <Insets bottom="70.0" left="20.0" />
+            <Insets bottom="70.0" left="20.0" right="15.0" />
          </BorderPane.margin>
       </ImageView>
    </left>
    <center>
-      <TextArea id="taReceta" fx:id="taReceta" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <TextArea id="taReceta" fx:id="taReceta" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="50.0" right="50.0" />
+         </BorderPane.margin></TextArea>
    </center>
 </BorderPane>
