@@ -8,9 +8,13 @@ import happyDAO.RecetaDao;
 import happyDTO.RecetaDto;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ToggleButton;
@@ -22,9 +26,11 @@ import javafx.event.ActionEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
-import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
-import java.io.InputStream;
+import java.io.IOException;
+import java.util.Set;
 
 
 public class PrincipalController {
@@ -78,12 +84,18 @@ public class PrincipalController {
     private ProgressIndicator spinnerCarga;
     @FXML
     Button btCargarMenu;
+    @FXML
+    VBox[][] matrizInterfaz;
+
+    FavoritoDao favoritoDao = new FavoritoDao();
+    RecetaDao recetaDao = new RecetaDao();
 
 
     @FXML
     public void initialize() {
         configurarTitulos();
         // botonCorazon();
+        matrizInterfaz = obtenerMatrizCeldas();
     }
 
     public void configurarTitulos() {
@@ -189,10 +201,11 @@ public class PrincipalController {
 
     }
     */
-    public void ponerRecetaEnCelda(VBox celda, String titulo, String urlImg, JsonObject recetaJson) {
+    public void ponerRecetaEnCelda(VBox celda, String titulo, String urlImg, JsonObject recetaJson,Set<Integer> misFavoritos) {
         Platform.runLater(() -> {
             try {
                 celda.getChildren().clear();
+                int idApi = generarIdFicticio(titulo);
 
                 // --- Contenedor de Capas (StackPane) ---
                 StackPane capas = new StackPane();
@@ -208,7 +221,7 @@ public class PrincipalController {
                 fotoComida.setPreserveRatio(true);
 
                 if (urlImg != null && !urlImg.isEmpty()) {
-                    Image img = new Image(urlImg.replace("http://", "https://"), true);
+                    Image img = new Image(urlImg.replace("http://", "https://"), 110, 80, true, true, true);
                     img.errorProperty().addListener((obs, oldV, error) -> {
                         if (error) fotoComida.setImage(new Image(getClass().getResourceAsStream("/imagenes/logo.png")));
                     });
@@ -239,12 +252,31 @@ public class PrincipalController {
                 StackPane.setAlignment(btnFav, Pos.TOP_RIGHT);
                 StackPane.setMargin(btnFav, new Insets(5, 5, 0, 0)); // Margen para que no pegue al borde
 
-                configurarBotonFavorito(btnFav, iconoBtn, imgRelleno, imgVacio, titulo, urlImg);
+                // Calcula si es favorito
+                boolean esFav = (misFavoritos != null && misFavoritos.contains(idApi));
+                if(esFav){
+                    btnFav.setSelected(true);
+                    iconoBtn.setImage(imgRelleno);
+                } else {
+                btnFav.setSelected(false);
+                iconoBtn.setImage(imgVacio);
+                }
+
+
+                configurarBotonFavorito(btnFav, iconoBtn, imgRelleno, imgVacio, titulo, urlImg,esFav);
 
                 // --- Montar todo ---
                 capas.getChildren().addAll(contenido, btnFav);
                 celda.getChildren().add(capas);
                 celda.setAlignment(Pos.CENTER);
+
+                //hacemos un escuchador de las celdas para que al clickar se abra otra pantalla con la receta
+                celda.setCursor(Cursor.HAND); // Que el ratón cambie a mano para saber que es clicable
+                celda.setOnMouseClicked(e -> {
+                    if (e.getClickCount() == 1) { // Un solo clic
+                        abrirDetalleReceta(titulo, urlImg, recetaJson);
+                    }
+                });
 
             } catch (Exception e) {
                 System.err.println("Error: " + e.getMessage());
@@ -253,52 +285,36 @@ public class PrincipalController {
     }
 
     /// para probar sin usar la api
-    public void procesarMenuCompleto(String jsonRespuesta) {
+    public void procesarMenuCompleto(String jsonRespuesta, Set<Integer> misFavoritos) {
         try {
             JsonObject data = JsonParser.parseString(jsonRespuesta).getAsJsonObject();
             JsonObject week = data.getAsJsonObject("week");
-
             String[] diasApi = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
-            VBox[][] matrizInterfaz = obtenerMatrizCeldas();
 
             for (int i = 0; i < diasApi.length; i++) {
-                System.out.println("Intentando llenar el día: " + diasApi[i]);
                 JsonObject diaJson = week.getAsJsonObject(diasApi[i]);
-                String nombreDia = diasApi[i];
-                diaJson = week.getAsJsonObject(nombreDia);
-
                 if (diaJson != null) {
                     JsonArray comidas = diaJson.getAsJsonArray("meals");
 
+                    // --- MEJORA: Preparamos los datos del día en el Hilo Secundario ---
+                    // (Para no perder tiempo dentro del hilo visual)
+                    final int filaDia = i; // Necesario para usarlo en lambda
+
+                    // Procesamos los datos de las 3 comidas antes de ir a la interfaz
                     for (int j = 0; j < 3; j++) {
-
                         JsonObject receta = comidas.get(j).getAsJsonObject();
+                        String titulo = receta.has("title") ? receta.get("title").getAsString() : "Sin nombre";
+                        String urlImg = receta.has("image") ? receta.get("image").getAsString() :
+                                "https://spoonacular.com/recipeImages/" + receta.get("id").getAsString() + "-312x231.jpg";
 
-                        // 1. Sacamos el Título con seguridad (si no existe, ponemos "Sin nombre")
-                        String titulo = "Receta sin nombre";
-                        if (receta.has("title") && !receta.get("title").isJsonNull()) {
-                            titulo = receta.get("title").getAsString();
-                        }
-
-                        // 2. Sacamos la Imagen con seguridad
-                        String urlImg = "";
-                        if (receta.has("image") && !receta.get("image").isJsonNull()) {
-                            urlImg = receta.get("image").getAsString();
-                        } else if (receta.has("id") && !receta.get("id").isJsonNull()) {
-                            // Si no hay campo 'image', la construimos con el ID
-                            urlImg = "https://spoonacular.com/recipeImages/" + receta.get("id").getAsString() + "-312x231.jpg";
-                        }
-
-                        // 3. Pintamos la celda (esto ya lo tenías)
-                        ponerRecetaEnCelda(matrizInterfaz[i][j], titulo, urlImg, receta);
-
+                        // Llamamos a ponerRecetaEnCelda tal cual la tienes
+                        // Pero fíjate que ya no hay nada pesado de lógica aquí
+                        ponerRecetaEnCelda(matrizInterfaz[filaDia][j], titulo, urlImg, receta, misFavoritos);
+                        Thread.sleep(10);
                     }
                 }
             }
-            System.out.println("✅ ¡Menú semanal cargado con éxito!");
-
         } catch (Exception e) {
-            System.err.println("❌ Error crítico en el proceso: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -329,7 +345,13 @@ public class PrincipalController {
         // 3. Crear un hilo para que la base de datos no congele la ventana
         Thread thread = new Thread(() -> {
             try {
+                // --- PASO A: BUSCAR FAVORITOS EN LA BBDD (UNA SOLA VEZ) ---
+                FavoritoDao favoritoDao = new FavoritoDao();
+                // Obtenemos el ID del usuario de tu clase Sesion
+                int idUsuario = Sesion.getUsuario().getId();
 
+                // Traemos todos los IDs de golpe a la memoria (al Set)
+                Set<Integer> misFavoritos = favoritoDao.obtenerIdsFavoritos(idUsuario);
                 String jsonSimulado = "{" +
                         "  'week': {" +
                         "    'monday': { 'meals': [{ 'title': 'Avena con Frutas', 'image': 'https://spoonacular.com/recipeImages/632660-312x231.jpg' }, { 'title': 'Lentejas Veganas', 'image': 'https://spoonacular.com/recipeImages/649931-312x231.jpg' }, { 'title': 'Ensalada de Quinoa', 'image': 'https://spoonacular.com/recipeImages/657698-312x231.jpg' }] }," +
@@ -342,7 +364,7 @@ public class PrincipalController {
                         "  }" +
                         "}";
 
-                procesarMenuCompleto(jsonSimulado);
+                procesarMenuCompleto(jsonSimulado,misFavoritos);
                 Platform.runLater(() -> {
                     btn.setText("Generar Menú");
                     btn.setDisable(false);
@@ -404,57 +426,83 @@ public class PrincipalController {
 
     /// / codigo para probar que guarda en la bbdd sin conectar con la api
 
-    private void configurarBotonFavorito(ToggleButton btnFav, ImageView iconoBtn, Image imgRelleno, Image imgVacio, String titulo, String urlImg) {
+    private void configurarBotonFavorito(ToggleButton btnFav, ImageView iconoBtn, Image imgRelleno, Image imgVacio, String titulo, String urlImg, boolean yaEsFavorito) {
         try {
-            FavoritoDao favoritoDao = new FavoritoDao();
-            RecetaDao recetaDao = new RecetaDao();
+            btnFav.setSelected(yaEsFavorito);
+            iconoBtn.setImage(yaEsFavorito ? imgRelleno : imgVacio);
 
-            // --- GENERAMOS UN ID LOCAL BASADO EN EL TÍTULO ---
-            // Como no hay API, inventamos uno único para esta receta
-            int idApiFicticio = Math.abs(titulo.hashCode());
-
-            // Obtenemos el ID del usuario (ajusta a tu clase Sesion)
-            int idUsuario = Sesion.getUsuario().getId();
-
-            // 1. Estado inicial: ¿Ya estaba en favoritos?
-            if (favoritoDao.esFavorito(idUsuario, idApiFicticio)) {
-                btnFav.setSelected(true);
-                iconoBtn.setImage(imgRelleno);
-            } else {
-                btnFav.setSelected(false);
-                iconoBtn.setImage(imgVacio);
-            }
-
-            // 2. Evento al pinchar
+            //  Evento al pinchar
             btnFav.setOnAction(e -> {
                 try {
+
+                    // --- GENERAMOS UN ID LOCAL BASADO EN EL TÍTULO ---
+                    // Como no hay API, inventamos uno único para esta receta
+                    int idApiFicticio = generarIdFicticio(titulo);
+
+                    // Obtenemos el ID del usuario (ajusta a tu clase Sesion)
+                    int idUsuario = Sesion.getUsuario().getId();
                     if (btnFav.isSelected()) {
                         iconoBtn.setImage(imgRelleno);
-
-                        // Creamos el DTO con lo que tenemos
-                        RecetaDto dto = new RecetaDto();
-                        dto.setTitulo(titulo);
-                        dto.setUrlImagen(urlImg);
-                        dto.setIdApi(idApiFicticio); // Usamos el inventado
-
-                        int idLocal = recetaDao.asegurarRecetaEnBD(dto);
-                        favoritoDao.guardarFavorito(idUsuario, idLocal);
-                        System.out.println("❤️ Guardado localmente: " + titulo);
                     } else {
-                        iconoBtn.setImage(imgVacio);
-                        int idLocal = recetaDao.obtenerIdPorApi(idApiFicticio);
-                        if (idLocal != -1) {
-                            favoritoDao.eliminarFavorito(idUsuario, idLocal);
-                            System.out.println("💔 Eliminado localmente: " + titulo);
-                        }
+                    iconoBtn.setImage(imgVacio);
                     }
+                    Thread t = new Thread(() -> {
+                        try {
+                            if (btnFav.isSelected()) {
+                                RecetaDto dto = new RecetaDto(titulo, urlImg, idApiFicticio);
+                                int idLocal = recetaDao.asegurarRecetaEnBD(dto);
+                                favoritoDao.guardarFavorito(idUsuario, idLocal);
+
+                            } else {
+                                int idLocal = recetaDao.obtenerIdPorApi(idApiFicticio);
+                                if (idLocal != -1) {
+                                    favoritoDao.eliminarFavorito(idUsuario, idLocal);
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    t.setDaemon(true);
+                    t.start();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            });
+                });
+
         } catch (Exception ex) {
             System.err.println("Error al inicializar botón: " + ex.getMessage());
         }
+    }
+
+    /// /aqui abrimos la pantalla del detalle de la receta
+    private void abrirDetalleReceta(String titulo, String urlImg, JsonObject recetaJson) {
+        try {
+            // 1. Cargar el FXML de la nueva ventana
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/detalle_receta.fxml"));
+            Parent root = loader.load();
+
+            // 2. Obtener el controlador de la ventana de detalle
+            DetalleRecetaController controller = loader.getController();
+
+            controller.initData(titulo, urlImg, recetaJson);
+
+            // 4. Crear el escenario (Stage) y mostrarlo
+            Stage stage = new Stage();
+            stage.setTitle("Preparación: " + titulo);
+            stage.setScene(new Scene(root));
+            // Hacerla modal
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("Error al cargar la ventana de detalle: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    /// para crear el "id de a api" mientras no puedo conectarme a ella
+    private int generarIdFicticio(String titulo) {
+        return Math.abs(titulo.toLowerCase().trim().hashCode());
     }
 }
 

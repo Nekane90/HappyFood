@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class FavoritoDao {
@@ -71,6 +73,20 @@ public class FavoritoDao {
             System.err.println("❌ Error al comprobar favorito: " + e.getMessage());
             return false;
         }
+    }
+    //set es como una List, pero no repite los mismos ids
+    public Set<Integer> obtenerIdsFavoritos(int idUsuario) {
+        Set<Integer> favoritos = new HashSet<>();
+        String sql = "SELECT r.id_api FROM favoritos f JOIN recetas r ON f.id_receta = r.id WHERE f.id_usuario = ?";
+        try (Connection con = ConexionDB.conectar();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                favoritos.add(rs.getInt("id_api"));
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return favoritos;
     }
 }
 
