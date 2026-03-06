@@ -9,6 +9,7 @@ import happyDTO.RecetaDto;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,14 +27,18 @@ import javafx.event.ActionEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.Set;
 
 
-public class PrincipalController {
+public class PrincipalController  {
     @FXML
     private GridPane gpMenu;
     @FXML
@@ -85,6 +90,8 @@ public class PrincipalController {
     @FXML
     Button btCargarMenu;
     @FXML
+    private Circle circuloAvatar;
+    @FXML
     VBox[][] matrizInterfaz;
 
     FavoritoDao favoritoDao = new FavoritoDao();
@@ -96,6 +103,7 @@ public class PrincipalController {
         configurarTitulos();
         // botonCorazon();
         matrizInterfaz = obtenerMatrizCeldas();
+        //cargarFotoUsuario();
     }
 
     public void configurarTitulos() {
@@ -118,7 +126,28 @@ public class PrincipalController {
             GridPane.setHalignment(labelComida, HPos.CENTER);
         }
     }
+    /* ESTO ES MIOOO(MAIALEN) Q LO TENGO Q TERMINAR
+        public void cargarFotoUsuario() {
+        // Supongamos que tienes el ResultSet del usuario que acaba de entrar
+        try {
+            String fotoBD = resultSet.getString("imagen");
 
+            // Construimos la ruta.
+            // IMPORTANTE: Verifica que la ruta empiece por "/" y sea exacta
+            String ruta = "/com/example/happyfood/imagenes/avatares/" + fotoBD;
+
+            InputStream is = getClass().getResourceAsStream(ruta);
+
+            if (is != null) {
+                Image img = new Image(is);
+                circuloAvatar.setFill(new ImagePattern(img));
+            } else {
+                System.out.println("No se pudo encontrar la imagen: " + ruta);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }*/
     /// /ESTE ES UN CODIGO PARA PROBAR COMO SE VE EN LA VENTANA, EN LA OFI NO ME DEJA CONECTAR CON LA API
     @FXML
     private void manejarBotonBuscar(ActionEvent event) {

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.paint.ImagePattern?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="550.0" prefWidth="750.0" style="-fx-background-color: #A3D1C9;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.AvatarControllers">
+    <children>
+        <GridPane alignment="CENTER" hgap="25.0" vgap="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+            <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="NEVER" /> <RowConstraints minHeight="10.0" prefHeight="125.0" vgrow="SOMETIMES" /> <RowConstraints minHeight="10.0" prefHeight="125.0" vgrow="SOMETIMES" /> <RowConstraints minHeight="10.0" prefHeight="125.0" vgrow="SOMETIMES" /> </rowConstraints>
+            <children>
+                <Label text="Selecciona tu Avatar" textFill="#1b4332" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="0">
+                    <font>
+                        <Font name="Book Antiqua Bold" size="36.0" />
+                    </font>
+                </Label>
+
+                <Circle fx:id="avatar1" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/animal_1.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+                <Circle fx:id="avatar2" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/animal_2.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+                <Circle fx:id="avatar3" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/animal_3.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+                <Circle fx:id="avatar4" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/animal_4.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+
+                <Circle fx:id="avatar5" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/chef_animals_1.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+                <Circle fx:id="avatar6" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/chef_animals_2.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+                <Circle fx:id="avatar7" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/chef_animals_3.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+                <Circle fx:id="avatar8" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/bear.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+
+                <Circle fx:id="avatar9" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/cow2.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+                <Circle fx:id="avatar10" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/fox.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+                <Circle fx:id="avatar11" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/elephant2.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+                <Circle fx:id="avatar12" onMouseClicked="#seleccionarAvatar" radius="55.0" stroke="#1b4332" strokeWidth="3.0" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                    <fill><ImagePattern><image><Image url="@../../../imagenes/avatares/octopus2.png" /></image></ImagePattern></fill>
+                    <cursor><Cursor fx:constant="HAND" /></cursor>
+                </Circle>
+            </children>
+        </GridPane>
+    </children>
+</AnchorPane>

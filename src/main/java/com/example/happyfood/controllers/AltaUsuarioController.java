@@ -10,10 +10,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.CheckComboBox;
 import javafx.event.ActionEvent;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,12 +32,40 @@ public class AltaUsuarioController {
     @FXML private TextField txtPassword;
     @FXML private ComboBox<String> comboDieta;
     @FXML private CheckComboBox<String> comboIntolerancias; // De la librería ControlsFX
+    @FXML
+    private Circle circuloVistaPrevia;
 
+    // Variable para guardar el nombre y enviarlo luego a la Base de Datos
+    private String nombreAvatarSeleccionado = "animal_1.png";
 
+    @FXML
+    public void abrirGaleriaAvatares() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/avatar.fxml"));
+            Parent root = loader.load();
+
+            AvatarControllers controllerAvatares = loader.getController();
+
+            // Ahora esto ya no saldrá en rojo porque el método existe en AvatarControllers
+            controllerAvatares.setControladorAlta(this);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL); // Opcional: para que no pinchen atrás hasta elegir
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void cambiarFotoAvatar(Image nuevaImagen, String nombreArchivo) {
+        circuloVistaPrevia.setFill(new ImagePattern(nuevaImagen));
+        this.nombreAvatarSeleccionado = nombreArchivo;
+    }
     @FXML
     public void initialize() {
         // Llenamos el combo de dietas al abrir la pantalla
-        comboDieta.getItems().addAll( "Vegana", "Vegetariana", "Sin Gluten", "Mediterránea");
+        comboDieta.getItems().addAll( "Sin Dieta","Vegana", "Vegetariana", "Sin Gluten", "Mediterránea");
 
         // Llenamos las opciones de intolerancias
         comboIntolerancias.getItems().addAll("Lactosa", "Gluten", "Frutos Secos", "Marisco", "Huevo");
@@ -56,34 +89,41 @@ public class AltaUsuarioController {
 
         // 3. Comprobar formato de correo (Regex)
         if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-z]{2,}$")) {
-            mostrarAlerta("Error de Correo", "Por favor, introduce un email válido (ejemplo@correo.com).");
+            mostrarAlerta("Error de Correo", "Por favor, introduce un email válido.");
             return;
         }
 
-        // insertar
+        // 4. Insertar en la Base de Datos
         Connection con = ConexionDB.conectar();
         if (con != null) {
-            try {
 
-                String sql = "INSERT INTO usuarios (nombre_usuario, email, password, intolerancias, tipo_dieta) VALUES (?, ?, ?, ?, ?)";
-                PreparedStatement stmt = con.prepareStatement(sql);
+
+            String sql = "INSERT INTO usuarios (nombre_usuario, email, password, intolerancias, tipo_dieta, imagen) VALUES (?, ?, ?, ?, ?, ?)";
+
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
                 stmt.setString(1, nombre);
                 stmt.setString(2, email);
                 stmt.setString(3, password);
                 stmt.setString(4, intolerancias);
                 stmt.setString(5, dieta);
+                // Recuerda que esta variable se actualiza en el método cambiarFotoAvatar
+                stmt.setString(6, this.nombreAvatarSeleccionado);
 
                 int filas = stmt.executeUpdate();
                 if (filas > 0) {
                     mostrarAlerta("Éxito", "Usuario registrado correctamente.");
-                    limpiarCampos(); // Borrar campos tras éxito
+                    limpiarCampos();
                 }
             } catch (SQLException e) {
-                if (e.getMessage().contains("duplicate key")) {
-                    mostrarAlerta("Error", "Este usuario o correo ya existe.");
+                // Manejo de errores más amigable
+                if (e.getErrorCode() == 1062 || e.getMessage().contains("Duplicate")) {
+                    mostrarAlerta("Error", "El nombre de usuario o el correo ya están registrados.");
                 } else {
+                    mostrarAlerta("Error de Base de Datos", "No se pudo guardar el usuario: " + e.getMessage());
                     e.printStackTrace();
                 }
+            } finally {
+                try { con.close(); } catch (SQLException ex) { ex.printStackTrace(); }
             }
         }
     }

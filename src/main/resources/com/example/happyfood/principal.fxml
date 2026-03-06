@@ -6,28 +6,45 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import javafx.scene.shape.Circle?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="693.0" prefWidth="1559.0" style="-fx-background-color: #A3D1C9;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.PrincipalController">
    <top>
-      <HBox prefHeight="107.0" prefWidth="991.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label id="lbTitulo" fx:id="lbTitulo" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="348.0" text="Mi Menú" textAlignment="CENTER" textFill="#1b4332">
-               <font>
-                  <Font name="Book Antiqua" size="45.0" />
-               </font>
-               <HBox.margin>
-                  <Insets bottom="20.0" left="600.0" top="20.0" />
-               </HBox.margin>
-            </Label>
-            <ImageView id="imgLogo" fitHeight="138.0" fitWidth="210.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-               <HBox.margin>
-                  <Insets left="450.0" />
-               </HBox.margin>
-               <image>
-                  <Image url="@../../../imagenes/logo.png" />
-               </image>
-            </ImageView>
-         </children>
-      </HBox>
+       <HBox alignment="CENTER" prefHeight="120.0" prefWidth="1559.0" stylesheets="@estilos.css" BorderPane.alignment="CENTER">
+           <children>
+               <ImageView id="imgLogo" fitHeight="100.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                   <image>
+                       <Image url="@../../../imagenes/logo.png" />
+                   </image>
+                   <HBox.margin>
+                       <Insets left="30.0" />
+                   </HBox.margin>
+               </ImageView>
+
+               <Region HBox.hgrow="ALWAYS" />
+
+               <Label id="lbTitulo" fx:id="lbTitulo" alignment="CENTER" text="Mi Menú" textAlignment="CENTER" textFill="#1b4332">
+                   <font>
+                       <Font name="Book Antiqua" size="45.0" />
+                   </font>
+               </Label>
+
+               <Region HBox.hgrow="ALWAYS" />
+
+               <MenuButton contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                   <items>
+                       <MenuItem mnemonicParsing="false" text="Mi Cuenta" />
+                       <MenuItem mnemonicParsing="false" text="Favoritos" />
+                       <MenuItem mnemonicParsing="false" text="Salir" />
+                   </items>
+                   <graphic>
+                       <Circle fx:id="circuloAvatar" radius="35.0" stroke="#1b4332" strokeType="INSIDE" strokeWidth="2.0" />
+                   </graphic>
+                   <HBox.margin>
+                       <Insets right="30.0" />
+                   </HBox.margin>
+               </MenuButton>
+           </children>
+       </HBox>
    </top>
    <center>
       <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #E1F0ED;" BorderPane.alignment="CENTER">
