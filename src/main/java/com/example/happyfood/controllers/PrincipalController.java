@@ -96,6 +96,49 @@ public class PrincipalController  {
 
     FavoritoDao favoritoDao = new FavoritoDao();
     RecetaDao recetaDao = new RecetaDao();
+    private Set<Integer> misFavoritos;
+    private VBox celdaSeleccionada;
+
+    String jsonSimulado = "{" +
+            "  'week': {" +
+            "    'monday': { 'meals': [" +
+            "       { 'title': 'Avena con Frutas', 'image': 'https://spoonacular.com/recipeImages/632660-312x231.jpg', 'instructions': '1. Hervir la leche con canela.\\n2. Añadir avena y remover 5 min.\\n3. Servir con fruta fresca.' }," +
+            "       { 'title': 'Lentejas Veganas', 'image': 'https://spoonacular.com/recipeImages/649931-312x231.jpg', 'instructions': '1. Sofreír cebolla y zanahoria.\\n2. Añadir lentejas y agua.\\n3. Cocer 30 min.' }," +
+            "       { 'title': 'Ensalada de Quinoa', 'image': 'https://spoonacular.com/recipeImages/657698-312x231.jpg', 'instructions': '1. Lavar y cocer la quinoa.\\n2. Cortar pepino y tomate.\\n3. Mezclar con aliño de limón.' }" +
+            "    ] }," +
+            "    'tuesday': { 'meals': [" +
+            "       { 'title': 'Tortilla de Espinacas', 'image': 'https://spoonacular.com/recipeImages/660405-312x231.jpg', 'instructions': '1. Saltear espinacas frescas.\\n2. Batir 2 huevos.\\n3. Cocinar en sartén antiadherente.' }," +
+            "       { 'title': 'Pasta Integral', 'image': 'https://spoonacular.com/recipeImages/654883-312x231.jpg', 'instructions': '1. Cocer la pasta al dente.\\n2. Preparar salsa de tomate casera.\\n3. Mezclar y añadir orégano.' }," +
+            "       { 'title': 'Sopa de Verduras', 'image': 'https://spoonacular.com/recipeImages/663157-312x231.jpg', 'instructions': '1. Trocear verdura de temporada.\\n2. Hervir en caldo de pollo o vegetal.\\n3. Rectificar de sal.' }" +
+            "    ] }," +
+            "    'wednesday': { 'meals': [" +
+            "       { 'title': 'Pisto Manchego', 'image': 'https://spoonacular.com/recipeImages/660405-312x231.jpg', 'instructions': '1. Pochar pimiento y calabacín.\\n2. Añadir tomate triturado.\\n3. Cocinar a fuego lento.' }," +
+            "       { 'title': 'Arroz con Pollo', 'image': 'https://spoonacular.com/recipeImages/654883-312x231.jpg', 'instructions': '1. Dorar el pollo troceado.\\n2. Añadir arroz y sofreír.\\n3. Echar doble de agua y cocer 18 min.' }," +
+            "       { 'title': 'Crema de Calabaza', 'image': 'https://spoonacular.com/recipeImages/663157-312x231.jpg', 'instructions': '1. Asar la calabaza con cebolla.\\n2. Triturar con un poco de nata o leche.\\n3. Servir caliente.' }" +
+            "    ] }," +
+            "    'thursday': { 'meals': [" +
+            "       { 'title': 'Batido Verde', 'image': 'https://spoonacular.com/recipeImages/632660-312x231.jpg', 'instructions': '1. Batir espinacas, manzana y kiwi.\\n2. Añadir un chorrito de agua o zumo.' }," +
+            "       { 'title': 'Garbanzos', 'image': 'https://spoonacular.com/recipeImages/649931-312x231.jpg', 'instructions': '1. Usar garbanzos cocidos.\\n2. Saltear con espinacas y pimentón.' }," +
+            "       { 'title': 'Pescado', 'image': 'https://spoonacular.com/recipeImages/657698-312x231.jpg', 'instructions': '1. Salpimentar el filete.\\n2. Cocinar a la plancha 3 min por cada lado.' }" +
+            "    ] }," +
+            "    'friday': { 'meals': [" +
+            "       { 'title': 'Pan con Tomate', 'image': 'https://spoonacular.com/recipeImages/660405-312x231.jpg', 'instructions': '1. Tostar pan integral.\\n2. Frotar tomate maduro y añadir aceite.' }," +
+            "       { 'title': 'Filete', 'image': 'https://spoonacular.com/recipeImages/654883-312x231.jpg', 'instructions': '1. Marcar la carne en sartén muy caliente.\\n2. Acompañar con ensalada.' }," +
+            "       { 'title': 'Pizza Saludable', 'image': 'https://spoonacular.com/recipeImages/663157-312x231.jpg', 'instructions': '1. Base de tortilla de trigo.\\n2. Tomate, queso y verduras.\\n3. Hornear 5 min.' }" +
+            "    ] }," +
+            "    'saturday': { 'meals': [" +
+            "       { 'title': 'Pancakes', 'image': 'https://spoonacular.com/recipeImages/632660-312x231.jpg', 'instructions': '1. Mezclar huevo, harina y leche.\\n2. Hacer en sartén con gota de aceite.' }," +
+            "       { 'title': 'Hamburguesa Veggie', 'image': 'https://spoonacular.com/recipeImages/649931-312x231.jpg', 'instructions': '1. Formar hamburguesas de lentejas.\\n2. Pasar por la plancha.\\n3. Montar pan.' }," +
+            "       { 'title': 'Tacos', 'image': 'https://spoonacular.com/recipeImages/657698-312x231.jpg', 'instructions': '1. Rellenar tortillas con carne o verduras.\\n2. Añadir lima y cilantro.' }" +
+            "    ] }," +
+            "    'sunday': { 'meals': [" +
+            "       { 'title': 'Fruta Mix', 'image': 'https://spoonacular.com/recipeImages/660405-312x231.jpg', 'instructions': '1. Cortar fruta variada de temporada.\\n2. Servir con yogur natural.' }," +
+            "       { 'title': 'Paella', 'image': 'https://spoonacular.com/recipeImages/654883-312x231.jpg', 'instructions': '1. Hacer sofrito.\\n2. Añadir arroz y caldo de pescado.\\n3. Reposar 5 min.' }," +
+            "       { 'title': 'Sandwich', 'image': 'https://spoonacular.com/recipeImages/663157-312x231.jpg', 'instructions': '1. Pan integral con pavo y queso.\\n2. Calentar en sandwichera.' }" +
+            "    ] }" +
+            "  }" +
+            "}";
+
 
 
     @FXML
@@ -300,10 +343,14 @@ public class PrincipalController  {
                 celda.setAlignment(Pos.CENTER);
 
                 //hacemos un escuchador de las celdas para que al clickar se abra otra pantalla con la receta
+
                 celda.setCursor(Cursor.HAND); // Que el ratón cambie a mano para saber que es clicable
                 celda.setOnMouseClicked(e -> {
                     if (e.getClickCount() == 1) { // Un solo clic
-                        abrirDetalleReceta(titulo, urlImg, recetaJson);
+                        this.celdaSeleccionada = celda; // guardamos la referencia de la celda que se pincha
+                        boolean estaActualmenteEnFav = btnFav.isSelected();
+                        System.out.println("Clic en celda. Estado del botón: " + estaActualmenteEnFav);
+                        abrirDetalleReceta(titulo, urlImg, recetaJson,estaActualmenteEnFav);
                     }
                 });
 
@@ -381,17 +428,7 @@ public class PrincipalController  {
 
                 // Traemos todos los IDs de golpe a la memoria (al Set)
                 Set<Integer> misFavoritos = favoritoDao.obtenerIdsFavoritos(idUsuario);
-                String jsonSimulado = "{" +
-                        "  'week': {" +
-                        "    'monday': { 'meals': [{ 'title': 'Avena con Frutas', 'image': 'https://spoonacular.com/recipeImages/632660-312x231.jpg' }, { 'title': 'Lentejas Veganas', 'image': 'https://spoonacular.com/recipeImages/649931-312x231.jpg' }, { 'title': 'Ensalada de Quinoa', 'image': 'https://spoonacular.com/recipeImages/657698-312x231.jpg' }] }," +
-                        "    'tuesday': { 'meals': [{ 'title': 'Tortilla de Espinacas', 'image': 'https://spoonacular.com/recipeImages/660405-312x231.jpg' }, { 'title': 'Pasta Integral', 'image': 'https://spoonacular.com/recipeImages/654883-312x231.jpg' }, { 'title': 'Sopa de Verduras', 'image': 'https://spoonacular.com/recipeImages/663157-312x231.jpg' }] }," +
-                        "    'wednesday': { 'meals': [{ 'title': 'Pisto Manchego', 'image': 'https://spoonacular.com/recipeImages/660405-312x231.jpg' }, { 'title': 'Arroz con Pollo', 'image': 'https://spoonacular.com/recipeImages/654883-312x231.jpg' }, { 'title': 'Crema de Calabaza', 'image': 'https://spoonacular.com/recipeImages/663157-312x231.jpg' }] }," +
-                        "    'thursday': { 'meals': [{ 'title': 'Batido Verde', 'image': '...' }, { 'title': 'Garbanzos', 'image': '...' }, { 'title': 'Pescado', 'image': '...' }] }," +
-                        "    'friday': { 'meals': [{ 'title': 'Pan con Tomate', 'image': '...' }, { 'title': 'Filete', 'image': '...' }, { 'title': 'Pizza Saludable', 'image': '...' }] }," +
-                        "    'saturday': { 'meals': [{ 'title': 'Pancakes', 'image': '...' }, { 'title': 'Hamburguesa Veggie', 'image': '...' }, { 'title': 'Tacos', 'image': '...' }] }," +
-                        "    'sunday': { 'meals': [{ 'title': 'Fruta Mix', 'image': '...' }, { 'title': 'Paella', 'image': '...' }, { 'title': 'Sandwich', 'image': '...' }] }" +
-                        "  }" +
-                        "}";
+
 
                 procesarMenuCompleto(jsonSimulado,misFavoritos);
                 Platform.runLater(() -> {
@@ -472,8 +509,10 @@ public class PrincipalController  {
                     int idUsuario = Sesion.getUsuario().getId();
                     if (btnFav.isSelected()) {
                         iconoBtn.setImage(imgRelleno);
+                        this.misFavoritos.add(idApiFicticio); // Lo añadimos a la lista de la clase
                     } else {
                     iconoBtn.setImage(imgVacio);
+                        this.misFavoritos.remove(idApiFicticio); // Lo quitamos de la lista de la clase
                     }
                     Thread t = new Thread(() -> {
                         try {
@@ -505,20 +544,20 @@ public class PrincipalController  {
     }
 
     /// /aqui abrimos la pantalla del detalle de la receta
-    private void abrirDetalleReceta(String titulo, String urlImg, JsonObject recetaJson) {
+    private void abrirDetalleReceta(String titulo, String urlImg, JsonObject recetaJson,boolean favorito) {
         try {
-            // 1. Cargar el FXML de la nueva ventana
+            // Cargar el FXML de la nueva ventana
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/detalle_receta.fxml"));
             Parent root = loader.load();
 
-            // 2. Obtener el controlador de la ventana de detalle
+            //  Obtener el controlador de la ventana de detalle
             DetalleRecetaController controller = loader.getController();
 
-            controller.initData(titulo, urlImg, recetaJson);
+            controller.initData(titulo, urlImg, recetaJson,favorito);
 
-            // 4. Crear el escenario (Stage) y mostrarlo
+            // Crear el escenario (Stage) y mostrarlo
             Stage stage = new Stage();
-            Scene scene = new Scene(root, 1200, 700);
+            Scene scene = new Scene(root, 1000, 700);
             scene.getStylesheets().add(getClass().getResource("/com/example/happyfood/estilos.css").toExternalForm());
 
             stage.setTitle("Preparación: " + titulo);
@@ -526,8 +565,18 @@ public class PrincipalController  {
             stage.centerOnScreen();
             stage.setMaximized(true);
             // Hacerla modal
-            //stage.initModality(Modality.APPLICATION_MODAL);
-            stage.show();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+
+            //refrescamos los favoritos para que se actualicen
+            //refrescarFavoritosYMenu();
+            this.misFavoritos = favoritoDao.obtenerIdsFavoritos(Sesion.getUsuario().getId());
+
+            // En lugar de refrescar TODO el menú, solo refrescamos la celda que abrimos
+            if (celdaSeleccionada != null) {
+                actualizarCeldaEspecifica(titulo);
+            }
 
 
 
@@ -536,10 +585,43 @@ public class PrincipalController  {
             e.printStackTrace();
         }
     }
+
+    private void refrescarFavoritosYMenu() {
+        int idUsuario = Sesion.getUsuario().getId();
+        // Volvemos a leer de la BD
+        this.misFavoritos = favoritoDao.obtenerIdsFavoritos(idUsuario);
+        // Volvemos a pintar el menú con los datos actualizados
+        procesarMenuCompleto(jsonSimulado, misFavoritos);
+    }
+
+
     /// para crear el "id de a api" mientras no puedo conectarme a ella
     private int generarIdFicticio(String titulo) {
         return Math.abs(titulo.toLowerCase().trim().hashCode());
     }
+
+
+    //metodo para actualizar solo el corazon de la celda que se ha cambiado
+    private void actualizarCeldaEspecifica(String titulo) {
+        int idApi = generarIdFicticio(titulo);
+        boolean ahoraEsFav = this.misFavoritos.contains(idApi);
+
+        // Buscamos el ToggleButton dentro de la celda (está dentro del StackPane)
+        // Usamos una búsqueda recursiva o directa si conocemos la estructura
+        StackPane stack = (StackPane) celdaSeleccionada.getChildren().get(0);
+        ToggleButton btn = (ToggleButton) stack.getChildren().stream()
+                .filter(node -> node instanceof ToggleButton)
+                .findFirst()
+                .orElse(null);
+
+        if (btn != null) {
+            btn.setSelected(ahoraEsFav);
+            ImageView icono = (ImageView) btn.getGraphic();
+            String ruta = ahoraEsFav ? "/imagenes/corazon-relleno-rojo.png" : "/imagenes/corazon-contorno-rojo.png";
+            icono.setImage(new Image(getClass().getResourceAsStream(ruta)));
+        }
+    }
+
 }
 
 

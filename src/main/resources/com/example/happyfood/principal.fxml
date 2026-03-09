@@ -4,14 +4,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<?import javafx.scene.shape.Circle?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="693.0" prefWidth="1559.0" style="-fx-background-color: #A3D1C9;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.PrincipalController">
    <top>
        <HBox alignment="CENTER" prefHeight="120.0" prefWidth="1559.0" stylesheets="@estilos.css" BorderPane.alignment="CENTER">
            <children>
-               <ImageView id="imgLogo" fitHeight="100.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+               <ImageView id="imgLogo" fitHeight="118.0" fitWidth="125.0" pickOnBounds="true" preserveRatio="true">
                    <image>
                        <Image url="@../../../imagenes/logo.png" />
                    </image>
@@ -115,7 +115,7 @@
                   <Insets left="15.0" top="15.0" />
                </HBox.margin>
             </Button>
-            <Button id="btVerNevera" fx:id="btVerNevera" alignment="CENTER" layoutX="25.0" layoutY="25.0" mnemonicParsing="false" prefHeight="77.0" prefWidth="218.0" text="Ver Nevera">
+            <Button id="btVerNevera" fx:id="btVerNevera" alignment="CENTER" contentDisplay="RIGHT" layoutX="25.0" layoutY="25.0" mnemonicParsing="false" prefHeight="77.0" prefWidth="218.0" text="Ver Nevera">
                <font>
                   <Font size="20.0" />
                </font>

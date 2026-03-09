@@ -82,8 +82,8 @@ public class AltaUsuarioController {
         String intolerancias = String.join(", ", comboIntolerancias.getCheckModel().getCheckedItems());
 
         // 2. Comprobar campos vacíos
-        if (nombre.isEmpty() || email.isEmpty() || password.isEmpty() || dieta.isEmpty()) {
-            mostrarAlerta("Error de Validación", "Todos los campos son obligatorios.");
+        if (nombre.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            mostrarAlerta("Error de Validación", "Nombre, email y password son obligatorios.");
             return;
         }
 

@@ -4,26 +4,80 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="617.0" prefWidth="889.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.DetalleRecetaController">
-   <top>
-      <Label id="lbTitulo" fx:id="lbTitulo" prefHeight="57.0" prefWidth="124.0" stylesheets="@estilos.css" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets top="50.0" />
-         </BorderPane.margin>
-      </Label>
-   </top>
-   <left>
-      <ImageView id="imgReceta" fx:id="imgReceta" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="70.0" left="20.0" right="15.0" />
-         </BorderPane.margin>
-      </ImageView>
-   </left>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="617.0" prefWidth="889.0" style="-fx-background-color: #A3D1C9;" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.DetalleRecetaController">
    <center>
-      <TextArea id="taReceta" fx:id="taReceta" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <TextArea id="taReceta" fx:id="taReceta" prefHeight="321.0" prefWidth="500.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
-            <Insets bottom="50.0" right="50.0" />
+            <Insets bottom="50.0" left="50.0" right="50.0" />
          </BorderPane.margin></TextArea>
    </center>
+   <bottom>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="btVolver" mnemonicParsing="false" onAction="#volverPantallaPrincipal" prefHeight="77.0" prefWidth="218.0" text="Volver">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="50.0" top="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="btFavorito" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#manejarFavorito" prefHeight="77.0" prefWidth="218.0" text="Favorito">
+               <HBox.margin>
+                  <Insets left="50.0" top="10.0" />
+               </HBox.margin>
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView id="corazon" fx:id="corazon" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                     <image>
+                        <Image url="@../../../imagenes/corazon-contorno-rojo.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
+   </bottom>
+   <left>
+      <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="367.0" prefWidth="286.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView id="imgReceta" fx:id="imgReceta" fitHeight="209.0" fitWidth="263.0" pickOnBounds="true" preserveRatio="true">
+               <VBox.margin>
+                  <Insets bottom="50.0" left="30.0" right="50.0" top="100.0" />
+               </VBox.margin></ImageView>
+         </children>
+      </VBox>
+   </left>
+   <top>
+      <HBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets bottom="30.0" left="50.0" top="20.0" />
+               </HBox.margin>
+               <image>
+                  <Image url="@../../../imagenes/logo.png" />
+               </image>
+            </ImageView>
+            <Label id="lbTitulo" fx:id="lbTitulo" alignment="CENTER" prefHeight="72.0" prefWidth="570.0" stylesheets="@estilos.css" textAlignment="CENTER" textFill="#2c5f56">
+               <font>
+                  <Font size="44.0" />
+               </font>
+               <HBox.margin>
+                  <Insets bottom="20.0" left="300.0" top="40.0" />
+               </HBox.margin>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+         </children>
+      </HBox>
+   </top>
 </BorderPane>
