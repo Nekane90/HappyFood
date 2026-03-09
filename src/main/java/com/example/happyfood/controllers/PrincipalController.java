@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import happyDAO.FavoritoDao;
+import happyDAO.PlanificadorSemanalDao;
 import happyDAO.RecetaDao;
 import happyDTO.RecetaDto;
 import javafx.application.Platform;
@@ -16,12 +17,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.control.Label;
 
 import javafx.event.ActionEvent;
 import javafx.scene.layout.StackPane;
@@ -35,10 +33,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 
-public class PrincipalController  {
+public class PrincipalController extends  MenuLateralController  {
     @FXML
     private GridPane gpMenu;
     @FXML
@@ -93,6 +92,7 @@ public class PrincipalController  {
     private Circle circuloAvatar;
     @FXML
     VBox[][] matrizInterfaz;
+    @FXML private MenuButton menuLateral;
 
     FavoritoDao favoritoDao = new FavoritoDao();
     RecetaDao recetaDao = new RecetaDao();
@@ -147,6 +147,7 @@ public class PrincipalController  {
         // botonCorazon();
         matrizInterfaz = obtenerMatrizCeldas();
         //cargarFotoUsuario();
+        configurarMenuComun(menuLateral, this);
     }
 
     public void configurarTitulos() {
@@ -622,6 +623,66 @@ public class PrincipalController  {
         }
     }
 
+    //metodos para guardar el menu
+    @FXML
+    private void botonGuardar() {
+        //  Creamos el diálogo de entrada de texto
+        TextInputDialog dialog = new TextInputDialog("Mi Menú Semanal");
+        dialog.setTitle("Guardar Menú ");
+        dialog.setHeaderText("Vas a guardar el menú que ves en pantalla.");
+        dialog.setContentText("Introduce un nombre para este menú:");
+
+        //  Mostramos el diálogo y esperamos la respuesta
+        dialog.showAndWait().ifPresent(nombre -> {
+            if (!nombre.trim().isEmpty()) {
+                ejecutarGuardado(nombre);
+            } else {
+                mostrarAlerta("Datos vacios","El nombre no puede estar vacio");
+                System.out.println("El nombre no puede estar vacío.");
+            }
+        });
+    }
+    //metodos para guardar el menu
+    private void ejecutarGuardado(String nombre) {
+        PlanificadorSemanalDao dao = new PlanificadorSemanalDao();
+
+        int idUsuario = Sesion.getUsuario().getId();
+        String jsonParaGuardar = this.jsonSimulado;
+
+        boolean exito = dao.guardarPlan(idUsuario, nombre, jsonParaGuardar);
+
+        if (exito) {
+            System.out.println("✅ ¡Plan '" + nombre + "' guardado correctamente!");
+            // Aquí podrías mostrar un pequeño Label de "Guardado" que desaparezca a los 2 segundos
+        } else {
+            System.err.println("❌ Error al guardar en la base de datos.");
+        }
+    }
+
+
+    //metodo para mostrar alerta (messagebox)
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.ERROR);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
+    }
+
+
+
+    public Set<Integer> getMisFavoritos() {
+        return this.misFavoritos;
+    }
+
+    //Con este metodo se llama para abrir el menu desplegable de los menus
+    @FXML
+    private void desplegableMisMenus(ActionEvent event) {
+        // Como PrincipalController hereda de BaseController,
+        // tiene acceso directo al método abrirHistorial
+
+        abrirHistorial(this);
+    }
 }
 
 

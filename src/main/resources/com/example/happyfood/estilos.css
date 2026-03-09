@@ -77,7 +77,6 @@
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-cursor: hand;
-    /* Salimos de la carpeta del paquete para ir a la de imagenes */
     -fx-graphic: url("/imagenes/corazon-contorno-rojo.png");
     -fx-content-display: GRAPHIC_ONLY;
 }

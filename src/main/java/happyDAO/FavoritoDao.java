@@ -11,9 +11,7 @@ import java.util.Set;
 
 
 public class FavoritoDao {
-        /**
-         * Guarda la relación de favorito en la base de datos.
-         */
+
         public boolean guardarFavorito(int idUsuario, int idReceta) {
             String sql = "INSERT INTO favoritos (id_usuario, id_receta) VALUES (?, ?) ON CONFLICT DO NOTHING";
 
@@ -32,9 +30,6 @@ public class FavoritoDao {
             }
         }
 
-        /**
-         * Elimina una receta de los favoritos del usuario.
-         */
         public void eliminarFavorito(int idUsuario, int idReceta) {
             String sql = "DELETE FROM favoritos WHERE id_usuario = ? AND id_receta = ?";
 
@@ -50,9 +45,7 @@ public class FavoritoDao {
             }
         }
 
-        /**
-         * Comprueba si una receta ya es favorita para este usuario (para pintar el corazón rojo).
-         */
+    // Comprueba si una receta ya es favorita para este usuario (para pintar el corazón rojo).
 
     public boolean esFavorito(int idUsuario, int idApi) {
         //Aquí unimos la tabla favoritos con recetas para buscar por el ID de la API

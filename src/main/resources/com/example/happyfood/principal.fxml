@@ -30,11 +30,12 @@
 
                <Region HBox.hgrow="ALWAYS" />
 
-               <MenuButton contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+               <MenuButton id="menuLateral" fx:id="menuLateral" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: transparent;">
                    <items>
-                       <MenuItem mnemonicParsing="false" text="Mi Cuenta" />
-                       <MenuItem mnemonicParsing="false" text="Favoritos" />
-                       <MenuItem mnemonicParsing="false" text="Salir" />
+                       <MenuItem id="menuMiCuenta" fx:id="menuMiCuenta" mnemonicParsing="false" text="Mi Cuenta" />
+                  <MenuItem id="menuMisMenus" fx:id="menuMisMenus" mnemonicParsing="false" onAction="#desplegableMisMenus" text="Mis Menús" />
+                       <MenuItem id="menuFavorito" fx:id="menuFavorito" mnemonicParsing="false" text="Favoritos" />
+                       <MenuItem id="menuSalir" fx:id="menuSalir" mnemonicParsing="false" text="Salir" />
                    </items>
                    <graphic>
                        <Circle fx:id="circuloAvatar" radius="35.0" stroke="#1b4332" strokeType="INSIDE" strokeWidth="2.0" />
@@ -107,7 +108,7 @@
    <bottom>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Button id="btCargarMenu" fx:id="btCargarMenu" alignment="CENTER" mnemonicParsing="false" onAction="#onBotonGenerarClick" prefHeight="76.0" prefWidth="221.0" text="Cargar Menú">
+            <Button id="btCargarMenu" fx:id="btCargarMenu" alignment="CENTER" mnemonicParsing="false" onAction="#onBotonGenerarClick" prefHeight="76.0" prefWidth="221.0" text="Generar Menú">
                <font>
                   <Font size="20.0" />
                </font>
@@ -128,6 +129,20 @@
                         <Image url="@../../../imagenes/nevera.png" />
                      </image>
                   </ImageView>
+               </graphic>
+            </Button>
+            <Button id="btGuardar" fx:id="btGuardar" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#botonGuardar" prefHeight="77.0" prefWidth="218.0" text="Guardar" textAlignment="CENTER">
+               <HBox.margin>
+                  <Insets left="15.0" top="15.0" />
+               </HBox.margin>
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="58.0" fitWidth="63.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../imagenes/guardar1.png" />
+                     </image></ImageView>
                </graphic>
             </Button>
          </children></HBox>

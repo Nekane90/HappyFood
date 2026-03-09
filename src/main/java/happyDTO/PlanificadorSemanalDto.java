@@ -1,31 +1,55 @@
 package happyDTO;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class PlanificadorSemanalDto {
 
     private int id;
     private int idUsuario;
-    private int idReceta;
-    private Date fecha;
-    private String tipoComida;//desatuno-comida-cena
+    private Timestamp fecha;
+    private  String nombre_menu;
+    private String json;
 
-    public PlanificadorSemanalDto(int id, int idUsuario, int idReceta, Date fecha, String tipoComida){
+
+    public PlanificadorSemanalDto(int id, int idUsuario, Timestamp fecha, String nombreMenu, String json){
         this.id = id;
         this.idUsuario = idUsuario;
-        this.idReceta = idReceta;
         this.fecha = fecha;
-        this.tipoComida = tipoComida;
+        this.nombre_menu = nombreMenu;
+        this.json = json;
+
     }
+    public PlanificadorSemanalDto(int id, String nombre_menu,String json, Timestamp fecha){
+        this.id = id;
+        this.nombre_menu = nombre_menu;
+        this.json = json;
+        this.fecha = fecha;
+
+    }
+
+    public PlanificadorSemanalDto() {
+
+    }
+
 
     /// getters y setters
 
-    public int getIdReceta() {
-        return idReceta;
+    public String getJson() {
+        return json;
     }
 
-    public void setIdReceta(int idReceta) {
-        this.idReceta = idReceta;
+    public void setJson(String json) {
+        this.json = json;
+    }
+
+    public String getNombre_menu() {
+        return nombre_menu;
+    }
+
+    public void setNombre_menu(String nombre_menu) {
+        this.nombre_menu = nombre_menu;
     }
 
     public int getId() {
@@ -49,14 +73,8 @@ public class PlanificadorSemanalDto {
     }
 
     public void setFecha(Date fecha) {
-        this.fecha = fecha;
+        this.fecha = (Timestamp) fecha;
     }
 
-    public String getTipoComida() {
-        return tipoComida;
-    }
 
-    public void setTipoComida(String tipoComida) {
-        this.tipoComida = tipoComida;
-    }
 }
