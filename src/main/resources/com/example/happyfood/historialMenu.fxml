@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="488.0" prefWidth="730.0" style="-fx-background-color: #A3D1C9;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.HistorialMenuController">
+<AnchorPane prefHeight="603.0" prefWidth="828.0" style="-fx-background-color: #A3D1C9;" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.HistorialMenuController">
    <children>
       <HBox prefHeight="84.0" prefWidth="730.0">
          <children>
@@ -27,6 +27,14 @@
                </HBox.margin>
             </ImageView>
          </children></HBox>
-      <ListView id="listMenus" fx:id="listMenus" layoutX="110.0" layoutY="91.0" prefHeight="320.0" prefWidth="526.0" />
+      <ListView id="listMenus" fx:id="listMenus" layoutX="110.0" layoutY="91.0" prefHeight="339.0" prefWidth="566.0" />
+      <Button fx:id="btCargarMenu" layoutX="110.0" layoutY="482.0" mnemonicParsing="false" onAction="#cargarPlanSeleccionado" prefHeight="77.0" prefWidth="218.0" text="Cargar Menú">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
+      <Button fx:id="btEliminarMenu" layoutX="457.0" layoutY="482.0" mnemonicParsing="false" onAction="#eliminarMenu" prefHeight="77.0" prefWidth="218.0" text="Eliminar Menú">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
    </children>
 </AnchorPane>

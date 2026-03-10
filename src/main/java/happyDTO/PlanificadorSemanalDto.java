@@ -8,12 +8,12 @@ public class PlanificadorSemanalDto {
 
     private int id;
     private int idUsuario;
-    private Timestamp fecha;
+    private String fecha;
     private  String nombre_menu;
     private String json;
 
 
-    public PlanificadorSemanalDto(int id, int idUsuario, Timestamp fecha, String nombreMenu, String json){
+    public PlanificadorSemanalDto(int id, int idUsuario, String fecha, String nombreMenu, String json){
         this.id = id;
         this.idUsuario = idUsuario;
         this.fecha = fecha;
@@ -21,7 +21,7 @@ public class PlanificadorSemanalDto {
         this.json = json;
 
     }
-    public PlanificadorSemanalDto(int id, String nombre_menu,String json, Timestamp fecha){
+    public PlanificadorSemanalDto(int id, String nombre_menu,String json, String fecha){
         this.id = id;
         this.nombre_menu = nombre_menu;
         this.json = json;
@@ -32,6 +32,7 @@ public class PlanificadorSemanalDto {
     public PlanificadorSemanalDto() {
 
     }
+
 
 
     /// getters y setters
@@ -68,13 +69,15 @@ public class PlanificadorSemanalDto {
         this.idUsuario = idUsuario;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = (Timestamp) fecha;
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
     }
 
-
+    public String toString(){
+        return nombre_menu +"( "+ fecha +")";
+    }
 }

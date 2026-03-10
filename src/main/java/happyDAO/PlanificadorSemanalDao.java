@@ -35,7 +35,7 @@ public class PlanificadorSemanalDao {
     public List<PlanificadorSemanalDto> obtenerPlanesPorUsuario(int idUser) {
         List<PlanificadorSemanalDto> lista = new ArrayList<>();
         // Ordenamos por fecha para que el más reciente salga primero
-        String sql = "SELECT id, nombre_menu, contenido_json, DATE_FORMAT(fecha, '%d/%m/%Y %H:%i') as fecha_formateada " +
+        String sql = "SELECT id, nombre_menu, contenido_json, TO_CHAR(fecha, 'DD/MM/YYYY HH24:MI') as fecha_formateada " +
                 "FROM planificadorsemanal WHERE id_usuario = ? ORDER BY fecha DESC";
 
         try (Connection conn = ConexionDB.conectar();
@@ -47,14 +47,30 @@ public class PlanificadorSemanalDao {
             while (rs.next()) {
                 lista.add(new PlanificadorSemanalDto(
                         rs.getInt("id"),
-                        rs.getString("nombre_plan"),
+                        rs.getString("nombre_menu"),
                         rs.getString("contenido_json"),
-                        rs.getTimestamp("fecha_formateada")
+                        rs.getString("fecha_formateada")
                 ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return lista;
+    }
+
+    public boolean eliminarPlan(int idPlan) {
+        String sql = "DELETE FROM planificadorsemanal WHERE id = ?";
+
+        try (Connection conn = ConexionDB.conectar();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idPlan);
+            int filasAfectadas = pstmt.executeUpdate();
+            return filasAfectadas > 0; // Retorna true si se eliminó algo
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
