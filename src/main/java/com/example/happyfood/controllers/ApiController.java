@@ -7,26 +7,41 @@ import java.net.http.HttpResponse;
 
 public class ApiController {
     private static final String API_KEY = "e12ee1226aa1476f96f3497e8bad1a8e";
-    private static final String BASE_URL = "https://api.spoonacular.com/recipes/complexSearch";
 
-    // Hay que comprobar si conecta bien con la api///
-    /// ///
-    /// /////
-    /// /////
-    public String buscarRecetas(String ingrediente) throws Exception {
-        // 1. Construimos la URL con el filtro y la llave
-        String urlFinal = BASE_URL + "?apiKey=" + API_KEY + "&query=" + ingrediente;
+    // URL para generar un plan de comidas semanal
+    private static final String URL_PLAN_SEMANAL = "https://api.spoonacular.com/mealplanner/generate?timeFrame=week";
 
-        // 2. Creamos el cliente y la petición
+    public String obtenerPlanSemanal() throws Exception {
+        // Construimos la URL con la API KEY
+        String urlFinal = URL_PLAN_SEMANAL + "&apiKey=" + API_KEY;
+
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(urlFinal))
+                .GET() // Es una petición de lectura
                 .build();
 
-        // 3. Enviamos y recibimos la respuesta
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        return response.body(); // Esto devuelve el JSON con las recetas
+        if (response.statusCode() != 200) {
+            throw new Exception("Error en la API: Código " + response.statusCode());
+        }
+
+        return response.body();
+    }
+
+    // Mantienes tu método de buscar recetas individuales si lo usas en otra parte
+    public String buscarRecetas(String ingrediente) throws Exception {
+        String urlFinal = "https://api.spoonacular.com/recipes/complexSearch?apiKey=" + API_KEY + "&query=" + ingrediente;
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(urlFinal)).build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+    }
+
+    public String obtenerDetallesReceta(int id) throws Exception {
+        String url = "https://api.spoonacular.com/recipes/" + id + "/information?apiKey=" + API_KEY;
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 }
-

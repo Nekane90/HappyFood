@@ -73,4 +73,21 @@ public class PlanificadorSemanalDao {
             return false;
         }
     }
+
+    public String obtenerUltimoPlan(int idUsuario) {
+        String sql = "SELECT contenido_json FROM planificadorsemanal WHERE id_usuario = ? ORDER BY id DESC LIMIT 1";
+        try (Connection conn = ConexionDB.conectar();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idUsuario);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("contenido_json");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

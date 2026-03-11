@@ -42,9 +42,9 @@ public class DetalleRecetaController {
         actualizarIconoFavorito();
 
         lbTitulo.setText(titulo);
-        System.out.println("Intentando cargar imagen en: " + imgReceta);
-        System.out.println("Detalle cargado. ¿Viene como favorito?: " + favoritoInicial);
-
+        taReceta.setWrapText(true);
+        taReceta.setEditable(false);
+        taReceta.setText("Traduciendo receta...");
 
         if (urlImg != null && !urlImg.isEmpty()) {
             String urlLimpia = urlImg.trim().replace("http://", "https://");
@@ -62,29 +62,55 @@ public class DetalleRecetaController {
 
             imgReceta.setImage(img);
         }
-
-        /*if (urlImg != null && !urlImg.isEmpty()) {
-            System.out.println("DEBUG: La URL recibida es: " + urlImg);
+        // TRADUCCIÓN EN SEGUNDO PLANO
+        Thread threadTraduccion = new Thread(() -> {
             try {
+                String tituloEs = TraductorService.traducirFrase(titulo);
 
-                String urlLimpia = urlImg.trim().replace("http://", "https://");
+                String instruccionesEn = "";
+                if (recetaJson.has("instructions") && !recetaJson.get("instructions").isJsonNull()) {
+                    instruccionesEn = recetaJson.get("instructions").getAsString();
+                } else if (recetaJson.has("summary") && !recetaJson.get("summary").isJsonNull()) {
+                    instruccionesEn = recetaJson.get("summary").getAsString();
+                }
 
-                Image img = new Image(urlLimpia, true);
+                // --- TRUCO PARA EVITAR RECORTES ---
+                // 1. Limpiamos HTML
+                // 2. Reemplazamos saltos de línea por puntos o espacios temporales
+                // para que Google no se detenga en la primera línea.
+                String textoLimpio = instruccionesEn.replaceAll("<[^>]*>", " ") // Quitar HTML
+                        .replaceAll("\\s+", " ")     // Quitar múltiples espacios/tabs
+                        .trim();
 
-                imgReceta.setImage(img);
+                String instruccionesEs = "Instrucciones no disponibles.";
+                if (!textoLimpio.isEmpty()) {
+                    // Si el texto es muy largo, Google puede fallar.
+                    // Para recetas normales, esto funcionará perfecto.
+                    instruccionesEs = TraductorService.traducirFrase(textoLimpio);
+                    System.out.println("Texto enviado a Google: " + textoLimpio);
+                }
+
+                String finalTitulo = tituloEs;
+                String finalInstrucciones = instruccionesEs;
+
+                Platform.runLater(() -> {
+                    lbTitulo.setText(finalTitulo);
+                    // Si quieres que el texto no sea una sola línea gigante,
+                    // podemos añadir un formateo básico después de traducir
+                    taReceta.setText(finalInstrucciones.replace(". ", ".\n\n"));
+                });
+
             } catch (Exception e) {
-                System.err.println("Error cargando imagen: " + e.getMessage());
+                // ... tu catch actual ...
             }
-        }*/
-        if (recetaJson.has("instructions")) {
-            String instrucciones = recetaJson.get("instructions").getAsString();
-            taReceta.setText(instrucciones);
-            taReceta.setWrapText(true); // Ajuste de línea automático
-            taReceta.setEditable(false); // No queremos que el usuario las borre
-        } else {
-            taReceta.setText("Instrucciones no disponibles para esta receta.");
-        }
+        });
+
+        threadTraduccion.setDaemon(true);
+        threadTraduccion.start();
     }
+
+
+
 
     @FXML
     private void manejarFavorito(ActionEvent event) {
@@ -92,9 +118,15 @@ public class DetalleRecetaController {
         actualizarIconoFavorito();
 
         int idUsuario = Sesion.getUsuario().getId();
+
+        // Obtener el ID real de Spoonacular
+
+        int idApi = recetaJson.get("id").getAsInt();
+
         String titulo = recetaJson.get("title").getAsString();
+
+        // Aseguramos que la URL sea la que guardamos en la pantalla anterior
         String urlImg = recetaJson.get("image").getAsString();
-        int idApi = generarIdFicticio(titulo);
 
         Thread t = new Thread(() -> {
             try {
@@ -102,17 +134,19 @@ public class DetalleRecetaController {
                 RecetaDao recDao = new RecetaDao();
 
                 if (esFavorito) {
+                    // Usamos el idApi real para guardar en nuestra BD
                     RecetaDto receta = new RecetaDto(titulo, urlImg, idApi);
                     int idLocal = recDao.asegurarRecetaEnBD(receta);
                     favDao.guardarFavorito(idUsuario, idLocal);
+                    System.out.println("❤️ Favorito guardado con ID API: " + idApi);
                 } else {
+                    // Buscamos por el ID real para eliminar
                     int idLocal = recDao.obtenerIdPorApi(idApi);
-                    if (idLocal != -1) favDao.eliminarFavorito(idUsuario, idLocal);
+                    if (idLocal != -1) {
+                        favDao.eliminarFavorito(idUsuario, idLocal);
+                        System.out.println("💔 Favorito eliminado con ID API: " + idApi);
+                    }
                 }
-
-                // Actualizamos la UI en el hilo principal
-                //Platform.runLater(this::actualizarIconoFavorito);
-
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -138,10 +172,9 @@ public class DetalleRecetaController {
 
     }
 
-    /// para crear el "id de a api" mientras no puedo conectarme a ella
-    private int generarIdFicticio(String titulo) {
-        return Math.abs(titulo.toLowerCase().trim().hashCode());
-    }
+    //getter
+    public boolean isEsFavorito() { return esFavorito; }
+
 
 
 
