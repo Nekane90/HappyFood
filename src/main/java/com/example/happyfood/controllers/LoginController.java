@@ -26,8 +26,7 @@ public class LoginController  {
 
     @FXML
     private PasswordField pfPassword;
-
-
+    
     /// metodo que llama a la pantalla principal
     @FXML
     private void manejarBotonEntrar(ActionEvent event) {

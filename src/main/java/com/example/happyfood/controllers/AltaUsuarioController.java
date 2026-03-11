@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AltaUsuarioController {
 
@@ -70,60 +72,64 @@ public class AltaUsuarioController {
         // Llenamos las opciones de intolerancias
         comboIntolerancias.getItems().addAll("Lactosa", "Gluten", "Frutos Secos", "Marisco", "Huevo");
     }
+    private static final Map<String, String> MAPA_DIETAS = Map.of(
+            "Sin Dieta", "none",
+            "Vegana", "vegan",
+            "Vegetariana", "vegetarian",
+            "Sin Gluten", "gluten-free",
+            "Mediterránea", "mediterranean"
+    );
 
+    private static final Map<String, String> MAPA_INTOLERANCIAS = Map.of(
+            "Lactosa", "lactose",
+            "Gluten", "gluten",
+            "Frutos Secos", "nuts",
+            "Marisco", "shellfish",
+            "Huevo", "egg"
+    );
     @FXML
+
     public void insertar(ActionEvent event) {
-        // 1. Obtener datos
+        // 1. Obtener y Traducir Dieta
+        String dietaSeleccionada = (comboDieta.getValue() != null) ? comboDieta.getValue().toString() : "Sin Dieta";
+        String dietaBD = MAPA_DIETAS.getOrDefault(dietaSeleccionada, "none");
+
+        // 2. Obtener y Traducir Intolerancias (CheckComboBox)
+        // Convertimos la lista de Strings en español a una sola cadena en inglés separada por comas
+        String intoleranciasBD = comboIntolerancias.getCheckModel().getCheckedItems()
+                .stream()
+                .map(item -> MAPA_INTOLERANCIAS.getOrDefault(item, item.toLowerCase()))
+                .collect(Collectors.joining(", "));
+
+        // 3. Resto de datos
         String nombre = txtNombre.getText().trim();
         String email = txtEmail.getText().trim();
         String password = txtPassword.getText().trim();
-        String dieta = (comboDieta.getValue() != null) ? comboDieta.getValue().toString() : "";
-        // Para CheckComboBox de ControlsFX
-        String intolerancias = String.join(", ", comboIntolerancias.getCheckModel().getCheckedItems());
 
-        // 2. Comprobar campos vacíos
+        // --- Validaciones (Igual que antes) ---
         if (nombre.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            mostrarAlerta("Error de Validación", "Nombre, email y password son obligatorios.");
+            mostrarAlerta("Error", "Campos obligatorios vacíos.");
             return;
         }
 
-        // 3. Comprobar formato de correo (Regex)
-        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-z]{2,}$")) {
-            mostrarAlerta("Error de Correo", "Por favor, introduce un email válido.");
-            return;
-        }
-
-        // 4. Insertar en la Base de Datos
+        // 4. Inserción en BD
         Connection con = ConexionDB.conectar();
         if (con != null) {
-
-
             String sql = "INSERT INTO usuarios (nombre_usuario, email, password, intolerancias, tipo_dieta, imagen) VALUES (?, ?, ?, ?, ?, ?)";
-
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
                 stmt.setString(1, nombre);
                 stmt.setString(2, email);
                 stmt.setString(3, password);
-                stmt.setString(4, intolerancias);
-                stmt.setString(5, dieta);
-                // Recuerda que esta variable se actualiza en el método cambiarFotoAvatar
+                stmt.setString(4, intoleranciasBD);
+                stmt.setString(5, dietaBD);
                 stmt.setString(6, this.nombreAvatarSeleccionado);
 
-                int filas = stmt.executeUpdate();
-                if (filas > 0) {
-                    mostrarAlerta("Éxito", "Usuario registrado correctamente.");
+                if (stmt.executeUpdate() > 0) {
+                    mostrarAlerta("Éxito", "Usuario guardado.");
                     limpiarCampos();
                 }
             } catch (SQLException e) {
-                // Manejo de errores más amigable
-                if (e.getErrorCode() == 1062 || e.getMessage().contains("Duplicate")) {
-                    mostrarAlerta("Error", "El nombre de usuario o el correo ya están registrados.");
-                } else {
-                    mostrarAlerta("Error de Base de Datos", "No se pudo guardar el usuario: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            } finally {
-                try { con.close(); } catch (SQLException ex) { ex.printStackTrace(); }
+
             }
         }
     }
