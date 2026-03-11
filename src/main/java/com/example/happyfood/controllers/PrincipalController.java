@@ -99,7 +99,7 @@ public class PrincipalController extends  MenuLateralController  {
     private Set<Integer> misFavoritos;
     private VBox celdaSeleccionada;
 
-    String jsonSimulado = "{" +
+    /*String jsonSimulado = "{" +
             "  'week': {" +
             "    'monday': { 'meals': [" +
             "       { 'title': 'Avena con Frutas', 'image': 'https://spoonacular.com/recipeImages/632660-312x231.jpg', 'instructions': '1. Hervir la leche con canela.\\n2. Añadir avena y remover 5 min.\\n3. Servir con fruta fresca.' }," +
@@ -137,7 +137,7 @@ public class PrincipalController extends  MenuLateralController  {
             "       { 'title': 'Sandwich', 'image': 'https://spoonacular.com/recipeImages/663157-312x231.jpg', 'instructions': '1. Pan integral con pavo y queso.\\n2. Calentar en sandwichera.' }" +
             "    ] }" +
             "  }" +
-            "}";
+            "}";*/
 
 
 
