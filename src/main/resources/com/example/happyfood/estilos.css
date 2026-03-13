@@ -6,6 +6,7 @@
         -fx-background-radius: 20;
         -fx-border-width: 2;
 
+
 }
 .button:hover {
     /* Al pasar el ratón se aclara un poco */

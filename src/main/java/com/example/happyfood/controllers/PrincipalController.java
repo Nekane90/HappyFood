@@ -20,6 +20,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.event.ActionEvent;
 import javafx.scene.layout.StackPane;
@@ -93,12 +94,15 @@ public class PrincipalController extends  MenuLateralController  {
     @FXML
     VBox[][] matrizInterfaz;
     @FXML private MenuButton menuLateral;
+    @FXML private VBox capaCarga;
+
 
     FavoritoDao favoritoDao = new FavoritoDao();
     RecetaDao recetaDao = new RecetaDao();
     private Set<Integer> misFavoritos;
     private VBox celdaSeleccionada;
     private String ultimoJsonRecibido;
+    private AtomicInteger platosCargados = new AtomicInteger(0);
 
 
     @FXML
@@ -176,6 +180,7 @@ public class PrincipalController extends  MenuLateralController  {
         Button btn = (Button) event.getSource();
         btn.setText("Cargando Menú...");
         btn.setDisable(true);
+        capaCarga.setVisible(true); // <--- ACTIVAMOS SPINNER AQUÍ
 
         Thread thread = new Thread(() -> {
             try {
@@ -195,6 +200,7 @@ public class PrincipalController extends  MenuLateralController  {
             } catch (Exception e) {
                 e.printStackTrace();
                 Platform.runLater(() -> {
+                    capaCarga.setVisible(false); // Si hay error de red, sí lo quitamos
                     mostrarAlerta("Error de Conexión", "No se pudo conectar con la API de Spoonacular.");
                     btn.setDisable(false);
                 });
@@ -206,53 +212,68 @@ public class PrincipalController extends  MenuLateralController  {
     // --- PROCESAR EL JSON  DE SPOONACULAR ---
     public void procesarMenuCompleto(String jsonRespuesta, Set<Integer> misFavoritos) {
         try {
+            platosCargados.set(0);
+            capaCarga.setVisible(true);
+
             JsonObject data = JsonParser.parseString(jsonRespuesta).getAsJsonObject();
-            // Usamos la protección que hablamos antes por si no viene el nodo "week"
             JsonObject week = data.has("week") ? data.getAsJsonObject("week") : data;
             String[] diasApi = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
 
             for (int i = 0; i < diasApi.length; i++) {
                 JsonObject diaJson = week.getAsJsonObject(diasApi[i]);
-                if (diaJson == null) continue;
-
+                if (diaJson == null){
+                    platosCargados.addAndGet(3);
+                    continue;
+                }
                 JsonArray comidas = diaJson.getAsJsonArray("meals");
 
                 for (int j = 0; j < 3; j++) {
-                    if (j >= comidas.size()) break;
+                    if (j >= comidas.size()) {
+                        platosCargados.incrementAndGet();
+                        continue;
+                    }
 
                     JsonObject receta = comidas.get(j).getAsJsonObject();
-
-                    int idApiReal = receta.has("id") ? receta.get("id").getAsInt() : 0;
-                    String tituloOriginal = receta.has("title") ? receta.get("title").getAsString() : "No title";
+                    int idApiReal = receta.get("id").getAsInt();
+                    String tituloOriginal = receta.get("title").getAsString();
                     String urlImg = "https://spoonacular.com/recipeImages/" + idApiReal + "-312x231.jpg";
+                    VBox celda = matrizInterfaz[i][j];
 
-                    VBox celda = matrizInterfaz[i][j]; // La celda donde irá la receta
-
-                    Platform.runLater(() -> {
-                        ponerRecetaEnCelda(celda, tituloOriginal, urlImg, receta, misFavoritos, idApiReal);
+                    // --- Dibujar la receta con un pequeño respiro para que el GIF no se congele ---
+                    int finalI = i; int finalJ = j;
+                    Thread hiloDibujo = new Thread(() -> {
+                        try {
+                            // Esperamos un poquito entre plato y plato (30ms) para dejar que el GIF se mueva
+                            Thread.sleep((finalI * 3 + finalJ) * 30);
+                            Platform.runLater(() -> {
+                                ponerRecetaEnCelda(celda, tituloOriginal, urlImg, receta, misFavoritos, idApiReal);
+                            });
+                        } catch (InterruptedException e) { e.printStackTrace(); }
                     });
+                    hiloDibujo.setDaemon(true);
+                    hiloDibujo.start();
 
-                    // Traducir en segundo plano con un pequeño retraso para no bloquear Google
-                    int delay = (i * 3 + j) * 200; // Crea una cola (0ms, 200ms, 400ms...)
-
+                    // ---  Traducción ---
                     Thread t = new Thread(() -> {
                         try {
-                            Thread.sleep(delay); // Esperamos un poco antes de pedir la traducción
+                            // El delay de traducción debe ser mayor que el de dibujo
+                            Thread.sleep((finalI * 3 + finalJ) * 150);
                             String traducido = TraductorService.traducirFrase(tituloOriginal);
-                            System.out.println("Original: " + tituloOriginal + " -> Traducido: " + traducido);
 
                             Platform.runLater(() -> {
-                                // Buscamos el Label en el VBox (suponiendo que es el primer o segundo elemento)
                                 Label lb = buscarLabelEnCelda(celda);
+                                if (lb != null) lb.setText(traducido);
 
-                                if (lb != null) {
-                                    lb.setText(traducido);
-                                } else {
-                                    System.err.println("¡No se encontró el Label! Estructura de la celda: " + celda.getChildren());
+                                int total = platosCargados.incrementAndGet();
+                                if (total >= 21) {
+                                    capaCarga.setVisible(false);
+                                    System.out.println("✅ Menú listo. GIF ocultado.");
                                 }
                             });
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        } catch (Exception e) {
+                            if (platosCargados.incrementAndGet() >= 21) {
+                                Platform.runLater(() -> capaCarga.setVisible(false));
+                            }
                         }
                     });
                     t.setDaemon(true);
@@ -260,11 +281,10 @@ public class PrincipalController extends  MenuLateralController  {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error procesando JSON: " + e.getMessage());
+            capaCarga.setVisible(false);
             e.printStackTrace();
         }
     }
-
     //poner la receta en la celda
     public void ponerRecetaEnCelda(VBox celda, String titulo, String urlImg, JsonObject recetaJson, Set<Integer> misFavoritos, int idApiReal) {
         celda.getChildren().clear();
@@ -273,8 +293,7 @@ public class PrincipalController extends  MenuLateralController  {
         VBox contenido = new VBox(5);
         contenido.setAlignment(Pos.CENTER);
 
-        // Foto e Imagen (Mantén tu lógica de ImageView)
-        ImageView fotoComida = new ImageView(new Image(urlImg, 110, 80, true, true));
+        ImageView fotoComida = new ImageView(new Image(urlImg, 110, 80, true, true, true));
         Label lblTitulo = new Label(titulo);
         lblTitulo.setStyle("-fx-font-size: 14px; -fx-text-alignment: center;");
         lblTitulo.setWrapText(true);
@@ -386,7 +405,7 @@ public class PrincipalController extends  MenuLateralController  {
                 actualizarCorazonCelda(estadoFinal);
             }
 
-            // 3. Actualización de datos en segundo plano (Silencioso)
+            //  Actualización de datos en segundo plano (Silencioso)
             Thread t = new Thread(() -> {
                 this.misFavoritos = favoritoDao.obtenerIdsFavoritos(Sesion.getUsuario().getId());
             });
@@ -439,24 +458,24 @@ public class PrincipalController extends  MenuLateralController  {
     // tiene acceso directo al método abrirHistorial
     @FXML
     private void desplegableMisMenus(ActionEvent event) {
-        abrirHistorial(this);
+        //abrirHistorial(this);
     }
 
     //metodo para actualizar solo el corazon de la celda que se ha cambiado
     private void actualizarCorazonCelda(boolean ahoraEsFav) {
         try {
-            // 1. Entramos al StackPane de la celda que guardamos al hacer clic
+            // Entramos al StackPane de la celda que guardamos al hacer clic
             StackPane stack = (StackPane) celdaSeleccionada.getChildren().get(0);
 
-            // 2. Buscamos el ToggleButton entre sus hijos
+            //  Buscamos el ToggleButton entre sus hijos
             for (javafx.scene.Node nodo : stack.getChildren()) {
                 if (nodo instanceof ToggleButton) {
                     ToggleButton btn = (ToggleButton) nodo;
 
-                    // 3. Sincronizamos el estado del botón
+                    // Sincronizamos el estado del botón
                     btn.setSelected(ahoraEsFav);
 
-                    // 4. Cambiamos la imagen del corazón
+                    // Cambiamos la imagen del corazón
                     ImageView icono = (ImageView) btn.getGraphic();
                     String ruta = ahoraEsFav ? "/imagenes/corazon-relleno-rojo.png" : "/imagenes/corazon-contorno-rojo.png";
 
@@ -475,19 +494,28 @@ public class PrincipalController extends  MenuLateralController  {
     //metodo que carga en la pantalla principal el ultimo menu existente
     private void cargarUltimoMenuSiExiste() {
         int idUsuario = Sesion.getUsuario().getId();
+        Platform.runLater(() -> capaCarga.setVisible(true));
 
-        // Lo ejecutamos en un hilo para que la app no tarde en abrirse
         Thread t = new Thread(() -> {
-            PlanificadorSemanalDao dao = new PlanificadorSemanalDao();
-            String ultimoJson = dao.obtenerUltimoPlan(idUsuario);
+            try {
+                PlanificadorSemanalDao dao = new PlanificadorSemanalDao();
+                String ultimoJson = dao.obtenerUltimoPlan(idUsuario);
 
-            if (ultimoJson != null) {
-                this.ultimoJsonRecibido = ultimoJson;
+                if (ultimoJson != null) {
+                    this.ultimoJsonRecibido = ultimoJson;
 
-                Platform.runLater(() -> {
-                    procesarMenuCompleto(ultimoJson, misFavoritos);
-                    System.out.println("✅ Último menú cargado por defecto.");
-                });
+                    // 1. Ejecutamos el procesado en el hilo de la UI
+                    Platform.runLater(() -> {
+                        // Procesamos el menú (esto crea los nodos visuales)
+                        procesarMenuCompleto(ultimoJson, misFavoritos);
+                        System.out.println("✅ Interfaz lista y spinner oculto.");
+                    });
+                } else {
+                    Platform.runLater(() -> capaCarga.setVisible(false));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> capaCarga.setVisible(false));
             }
         });
         t.setDaemon(true);
@@ -505,6 +533,23 @@ public class PrincipalController extends  MenuLateralController  {
             }
         }
         return null;
+    }
+    //boton mis menus
+    @FXML
+    private void abrirHistorialMenus(ActionEvent event) {
+        try {
+            Button btn = (Button) event.getSource();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/historialMenu.fxml"));
+            Parent root = loader.load();
+            HistorialMenuController controller = loader.getController();
+            controller.setMainController(this); // Pasamos la referencia para que pueda cargar el JSON
+
+            Stage stage = new Stage();
+            stage.setTitle("Mis Menús Guardados");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) { e.printStackTrace(); }
     }
 }
 

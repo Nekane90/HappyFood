@@ -15,8 +15,8 @@ public class Launcher extends Application {
         // Cargamos el FXML desde la carpeta de recursos
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/happyfood/login.fxml"));
 
-        Scene scene = new Scene(fxmlLoader.load(), 650, 450);
-        stage.setTitle("Bienvenid@");
+        Scene scene = new Scene(fxmlLoader.load(), 650, 550);
+        stage.setTitle("Happy Food");
         stage.setScene(scene);
         /// centro la pantalla
         stage.centerOnScreen();

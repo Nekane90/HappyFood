@@ -58,7 +58,7 @@
    <top>
       <HBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="500.0" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
                   <Insets bottom="30.0" left="50.0" top="20.0" />
                </HBox.margin>
@@ -68,7 +68,7 @@
             </ImageView>
             <Label id="lbTitulo" fx:id="lbTitulo" alignment="CENTER" prefHeight="68.0" prefWidth="701.0" stylesheets="@estilos.css" textAlignment="CENTER" textFill="#2c5f56">
                <font>
-                  <Font size="44.0" />
+                  <Font size="30.0" />
                </font>
                <HBox.margin>
                   <Insets bottom="20.0" left="100.0" top="40.0" />

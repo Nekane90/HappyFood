@@ -8,30 +8,22 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.happyfood.controllers.LoginController">
    <children>
-      <VBox alignment="CENTER" fillWidth="false" layoutX="82.0" layoutY="21.0" prefHeight="365.0" prefWidth="778.0" style="-fx-background-color: #A3D1C9;" stylesheets="@estilos.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox alignment="CENTER" fillWidth="false" layoutX="-70.0" layoutY="-16.0" prefHeight="626.0" prefWidth="875.0" style="-fx-background-color: #A3D1C9;" stylesheets="@estilos.css" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="-70.0" AnchorPane.rightAnchor="-5.0" AnchorPane.topAnchor="-16.0">
          <children>
-            <ImageView id="imgLogo" fitHeight="153.0" fitWidth="186.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView id="imgLogo" fitHeight="195.0" fitWidth="302.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
-                  <Insets left="450.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
                <image>
                   <Image url="@../../../imagenes/logo.png" />
                </image>
             </ImageView>
-            <Label id="lbTitulo" fx:id="lbTitulo" alignment="CENTER" prefHeight="44.0" prefWidth="443.0" text="Bienvenid@ " textAlignment="CENTER" textFill="#1b4332">
+            <Label id="lbNombreUsuario" fx:id="lbNombreUsuario" alignment="CENTER" prefHeight="25.0" prefWidth="258.0" text="Nombre de Usuario">
                <font>
-                  <Font size="40.0" />
+                  <Font size="17.0" />
                </font>
                <VBox.margin>
-                  <Insets top="-95.0" />
-               </VBox.margin>
-            </Label>
-            <Label id="lbNombreUsuario" fx:id="lbNombreUsuario" alignment="CENTER" prefHeight="30.0" prefWidth="145.0" text="Nombre de Usuario">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <VBox.margin>
-                  <Insets top="20.0" />
+                  <Insets />
                </VBox.margin>
             </Label>
             <TextField id="tfNombre" fx:id="tfNombreUsuario" prefHeight="24.0" prefWidth="200.0">
@@ -39,9 +31,9 @@
                   <Insets top="15.0" />
                </VBox.margin>
             </TextField>
-            <Label id="lbPassword" fx:id="lbPassword" text="Password">
+            <Label id="lbPassword" fx:id="lbPassword" alignment="CENTER" prefHeight="12.0" prefWidth="218.0" text="Password" textAlignment="CENTER">
                <font>
-                  <Font size="14.0" />
+                  <Font size="17.0" />
                </font>
                <VBox.margin>
                   <Insets top="20.0" />
@@ -54,13 +46,13 @@
             </PasswordField>
             <Hyperlink id="hlRegistrate" fx:id="hlRegistrate" onAction="#llamadapantallaAlta" text="Regístrate aqui" underline="true">
                <font>
-                  <Font size="16.0" />
+                  <Font size="17.0" />
                </font>
                <VBox.margin>
                   <Insets top="15.0" />
                </VBox.margin>
             </Hyperlink>
-            <Button id="btAcceder" fx:id="btAcceder" defaultButton="true" mnemonicParsing="false" onAction="#manejarBotonEntrar" prefHeight="47.0" prefWidth="149.0" stylesheets="@estilos.css" text="Acceder">
+            <Button id="btAcceder" fx:id="btAcceder" defaultButton="true" mnemonicParsing="false" onAction="#manejarBotonEntrar" prefHeight="60.0" prefWidth="218.0" stylesheets="@estilos.css" text="Acceder">
 
                <VBox.margin>
                   <Insets bottom="40.0" top="20.0" />
@@ -73,6 +65,9 @@
                </font>
             </Button>
          </children>
+         <padding>
+            <Insets left="50.0" />
+         </padding>
       </VBox>
    </children>
 </AnchorPane>
