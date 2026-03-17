@@ -50,19 +50,33 @@ public class LoginController  {
 
             if (rs.next()) {
                 // --- LOGIN CORRECTO: GUARDAMOS SESIÓN ---
-                int id = rs.getInt("id");
+                /*int id = rs.getInt("id");
                 String dieta = rs.getString("tipo_dieta");
                 String intoleranciasStr = rs.getString("intolerancias");
                 //String nombre = rs.getString("nombre_usuario");
+                Sesion.setUsuario(new UsuarioDto(id, intoleranciasStr, dieta, nombreUsuario));*/
 
 
-                List<String> listaAlergias = new ArrayList<>();
-                if (intoleranciasStr != null && !intoleranciasStr.isEmpty()) {
-                    // Usamos una ArrayList
-                    listaAlergias = new ArrayList<>(Arrays.asList(intoleranciasStr.split(",")));
-                }
+                    int id = rs.getInt("id");
+                    String dieta = rs.getString("tipo_dieta");
+                    String intoleranciasStr = rs.getString("intolerancias");
+                    String email = rs.getString("email");
+                    String passBD = rs.getString("password");
+                    String avatar = rs.getString("imagen");
 
-                Sesion.setUsuario(new UsuarioDto(id, listaAlergias, dieta,nombreUsuario));
+
+                    UsuarioDto usuarioLogueado = new UsuarioDto();
+                    usuarioLogueado.setId(id);
+                    usuarioLogueado.setNombreUsuario(nombreUsuario);
+                    usuarioLogueado.setEmail(email);
+                    usuarioLogueado.setPassword(passBD);
+                    usuarioLogueado.setIntolerancias(intoleranciasStr);
+                    usuarioLogueado.setTipoDieta(dieta);
+                    usuarioLogueado.setAvatar(avatar);
+
+                    Sesion.setUsuario(usuarioLogueado);
+
+
 
                 // CAMBIO DE PANTALLA ---
                 try {

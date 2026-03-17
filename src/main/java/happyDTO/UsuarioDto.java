@@ -7,10 +7,11 @@ public class UsuarioDto {
     private String nombreUsuario;
     private String email;
     private String password;
-    private List<String> intolerancias;
+    private String intolerancias;
     private String tipoDieta;
+    private String avatar;
 
-    public UsuarioDto(int id, String nombreUsuario, String email, String password, List<String> intolerancias, String tipoDieta){
+    public UsuarioDto(int id, String nombreUsuario, String email, String password, String intolerancias, String tipoDieta){
         this.id = id;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
@@ -19,13 +20,16 @@ public class UsuarioDto {
         this.tipoDieta = tipoDieta;
     }
 
-    public UsuarioDto(int id, List<String> intolerancias, String tipoDieta, String nombreUsuario ){
+    public UsuarioDto(int id, String intolerancias, String tipoDieta, String nombreUsuario ){
         this.id = id;
         this.intolerancias = intolerancias;
         this.tipoDieta = tipoDieta;
         this.nombreUsuario = nombreUsuario;
     }
 
+    public UsuarioDto() {
+
+    }
 
 
     /// getters y setters
@@ -55,11 +59,11 @@ public class UsuarioDto {
         this.password = password;
     }
 
-    public List<String> getIntolerancias() {
+    public String getIntolerancias() {
         return intolerancias;
     }
 
-    public void setIntolerancias(List<String> intolerancias) {
+    public void setIntolerancias(String intolerancias) {
         this.intolerancias = intolerancias;
     }
 
@@ -71,6 +75,11 @@ public class UsuarioDto {
         this.tipoDieta = tipoDieta;
     }
 
+    //getter
+    public String getAvatar() { return avatar; }
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
     @Override
     public String toString() {
         return super.toString();

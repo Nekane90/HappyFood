@@ -11,10 +11,14 @@ import javafx.scene.input.MouseEvent;
 public class AvatarControllers {
     // 1. Añadimos la variable para guardar la referencia de la pantalla de Alta
     private AltaUsuarioController altaController;
+    private ModificarUsuarioController modificar;
 
     // 2. Este es el método que antes te salía en rojo
     public void setControladorAlta(AltaUsuarioController altaController) {
         this.altaController = altaController;
+    }
+    public void setControladorModificar(ModificarUsuarioController modificar) {
+        this.modificar = modificar;
     }
 
     @FXML

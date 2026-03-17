@@ -21,15 +21,16 @@ public abstract class MenuLateralController {
             switch (item.getId()) {
                 //case "btnMisMenus" -> item.setOnAction(e -> abrirHistorial(mainRef));
                 //case "btnFavoritos" -> item.setOnAction(e -> abrirFavoritos());
-                //case "btnCuenta" -> item.setOnAction(e -> abrirCuenta());
-                //case "btnSalir" -> item.setOnAction(e -> salir(menuLateral));
+                case "btnCuenta" -> item.setOnAction(e -> abrirCuenta(menuLateral));
+                case "btnSalir" -> item.setOnAction(e -> salir(menuLateral));
             }
         });
     }
 
 
 
-    /*protected void salir(MenuButton referencia) {
+
+    protected void salir(MenuButton referencia) {
         try {
             // 1. Cargamos el FXML del Login de forma simple
             Parent root = FXMLLoader.load(getClass().getResource("/com/example/happyfood/login.fxml"));
@@ -47,6 +48,27 @@ public abstract class MenuLateralController {
         } catch (IOException e) {
             System.err.println("Error al volver al login: " + e.getMessage());
         }
-    }*/
-    // aqui irian los demas metodos del menu desplegable)
+    }
+
+    protected void abrirCuenta(MenuButton ancla) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/modificarUsuario.fxml"));
+            Parent root = loader.load();
+
+
+            Stage stage = new Stage();
+            stage.setTitle("Configuración de Usuario");
+            stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la de atrás
+            stage.setScene(new Scene(root));
+
+
+            stage.show();
+
+
+        } catch (IOException e) {
+            System.err.println("Error al cargar modificarusuario.fxml. Revisa la ruta.");
+            e.printStackTrace();
+        }
+    }
 }

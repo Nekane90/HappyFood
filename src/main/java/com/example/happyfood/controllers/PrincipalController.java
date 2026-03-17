@@ -7,6 +7,7 @@ import happyDAO.FavoritoDao;
 import happyDAO.PlanificadorSemanalDao;
 import happyDAO.RecetaDao;
 import happyDTO.RecetaDto;
+import happyDTO.UsuarioDto;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -110,7 +111,7 @@ public class PrincipalController extends  MenuLateralController  {
         configurarTitulos();
         matrizInterfaz = obtenerMatrizCeldas();
         configurarMenuComun(menuLateral, this);
-
+        //cargarFotoUsuario();
         // Cargar favoritos al inicio
         new Thread(() -> {
             this.misFavoritos = favoritoDao.obtenerIdsFavoritos(Sesion.getUsuario().getId());
@@ -151,28 +152,37 @@ public class PrincipalController extends  MenuLateralController  {
                 {domingoDesayuno, domingoComida, domingoCena}    // Día 6
         };
     }
-    /* ESTO ES MIOOO(MAIALEN) Q LO TENGO Q TERMINAR
-        public void cargarFotoUsuario() {
-        // Supongamos que tienes el ResultSet del usuario que acaba de entrar
-        try {
-            String fotoBD = resultSet.getString("imagen");
+    /*// ESTO ES MIOOO(MAIALEN) Q LO TENGO Q TERMINAR
+    public void cargarFotoUsuario() {
+        UsuarioDto usuario = Sesion.getUsuario();
 
-            // Construimos la ruta.
-            // IMPORTANTE: Verifica que la ruta empiece por "/" y sea exacta
-            String ruta = "/com/example/happyfood/imagenes/avatares/" + fotoBD;
+        if (usuario != null && usuario.getAvatar() != null) {
+            // 1. Quitamos el "/" inicial si getClass().getResource() ya está en la raíz
+            // o lo dejamos si es ruta absoluta desde resources.
+            String nombreFoto = usuario.getAvatar();
+            String ruta = "/com/example/happyfood/imagenes/avatares/" + nombreFoto;
 
-            InputStream is = getClass().getResourceAsStream(ruta);
+            System.out.println("Intentando cargar: " + ruta); // DEBUG
 
-            if (is != null) {
-                Image img = new Image(is);
-                circuloAvatar.setFill(new ImagePattern(img));
-            } else {
-                System.out.println("No se pudo encontrar la imagen: " + ruta);
+            try {
+                var recurso = getClass().getResource(ruta);
+
+                if (recurso != null) {
+                    Image img = new Image(recurso.toExternalForm());
+                    circuloAvatar.setFill(new ImagePattern(img));
+                    System.out.println("¡Imagen cargada con éxito!");
+                } else {
+                    System.err.println("ERROR: No se encuentra el archivo en la carpeta resources.");
+                    System.err.println("Asegúrate de que el archivo se llame exactamente: " + nombreFoto);
+                }
+            } catch (Exception e) {
+                System.err.println("Error al crear la imagen: " + e.getMessage());
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } else {
+            System.out.println("Sesión vacía o usuario sin avatar.");
         }
     }*/
+
 
     // --- EL BOTÓN PRINCIPAL DE GENERAR MENÚ ---
     @FXML
