@@ -66,7 +66,7 @@
                   <Image url="@../../../imagenes/logo.png" />
                </image>
             </ImageView>
-            <Label id="lbTitulo" fx:id="lbTitulo" alignment="CENTER" prefHeight="68.0" prefWidth="701.0" stylesheets="@estilos.css" textAlignment="CENTER" textFill="#2c5f56">
+            <Label id="lbTitulo" fx:id="lbTitulo" alignment="CENTER" prefHeight="120.0" prefWidth="1200.0" wrapText="true" stylesheets="@estilos.css" textAlignment="CENTER" textFill="#2c5f56">
                <font>
                   <Font size="30.0" />
                </font>
