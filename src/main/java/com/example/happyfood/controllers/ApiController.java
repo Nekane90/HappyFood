@@ -11,23 +11,30 @@ public class ApiController {
     // URL para generar un plan de comidas semanal
     private static final String URL_PLAN_SEMANAL = "https://api.spoonacular.com/mealplanner/generate?timeFrame=week";
 
-    public String obtenerPlanSemanal() throws Exception {
-        // Construimos la URL con la API KEY
-        String urlFinal = URL_PLAN_SEMANAL + "&apiKey=" + API_KEY;
+    public String obtenerPlanSemanal(String dieta, String intolerancias) throws Exception {
+        StringBuilder urlFinal = new StringBuilder(URL_PLAN_SEMANAL);
+        urlFinal.append("&apiKey=").append(API_KEY);
+
+        if (dieta != null && !dieta.isEmpty()) {
+            urlFinal.append("&diet=").append(dieta);
+        }
+
+        // Aquí recibimos lo que viene de la BBDD (que ya está en inglés)
+        if (intolerancias != null && !intolerancias.isEmpty() && !intolerancias.equalsIgnoreCase("null")) {
+            urlFinal.append("&exclude=").append(intolerancias.replace(" ", ""));
+        }
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(urlFinal))
-                .GET() // Es una petición de lectura
+                .uri(URI.create(urlFinal.toString()))
+                .GET()
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new Exception("Error en la API: Código " + response.statusCode());
-        }
+        System.out.println("URL ENVIADA A API: " + urlFinal.toString());
 
         return response.body();
+
     }
 
     // Mantienes tu método de buscar recetas individuales si lo usas en otra parte
@@ -44,4 +51,6 @@ public class ApiController {
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
         return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
+
+
 }
