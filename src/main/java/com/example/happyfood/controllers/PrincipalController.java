@@ -111,7 +111,10 @@ public class PrincipalController extends  MenuLateralController  {
         configurarTitulos();
         matrizInterfaz = obtenerMatrizCeldas();
         configurarMenuComun(menuLateral, this);
-        //cargarFotoUsuario();
+        UsuarioDto usuario = Sesion.getUsuario();
+        if (usuario != null && usuario.getAvatar() != null) {
+            cargarImagenEnCirculo(usuario.getAvatar());
+        }
         // Cargar favoritos al inicio
         new Thread(() -> {
             this.misFavoritos = favoritoDao.obtenerIdsFavoritos(Sesion.getUsuario().getId());
@@ -152,36 +155,66 @@ public class PrincipalController extends  MenuLateralController  {
                 {domingoDesayuno, domingoComida, domingoCena}    // Día 6
         };
     }
-    /*// ESTO ES MIOOO(MAIALEN) Q LO TENGO Q TERMINAR
-    public void cargarFotoUsuario() {
+    /**
+     * Carga o refresca el avatar del usuario actual desde la Sesión.
+     */
+    public void actualizarAvatarUsuario() {
         UsuarioDto usuario = Sesion.getUsuario();
-
         if (usuario != null && usuario.getAvatar() != null) {
-            // 1. Quitamos el "/" inicial si getClass().getResource() ya está en la raíz
-            // o lo dejamos si es ruta absoluta desde resources.
-            String nombreFoto = usuario.getAvatar();
-            String ruta = "/com/example/happyfood/imagenes/avatares/" + nombreFoto;
-
-            System.out.println("Intentando cargar: " + ruta); // DEBUG
-
-            try {
-                var recurso = getClass().getResource(ruta);
-
-                if (recurso != null) {
-                    Image img = new Image(recurso.toExternalForm());
-                    circuloAvatar.setFill(new ImagePattern(img));
-                    System.out.println("¡Imagen cargada con éxito!");
-                } else {
-                    System.err.println("ERROR: No se encuentra el archivo en la carpeta resources.");
-                    System.err.println("Asegúrate de que el archivo se llame exactamente: " + nombreFoto);
-                }
-            } catch (Exception e) {
-                System.err.println("Error al crear la imagen: " + e.getMessage());
-            }
+            cargarImagenEnCirculo(usuario.getAvatar());
         } else {
-            System.out.println("Sesión vacía o usuario sin avatar.");
+            // Imagen por defecto si no hay avatar guardado
+            cargarImagenEnCirculo("animal_1.png");
         }
-    }*/
+    }
+
+    private void cargarImagenEnCirculo(String nombreImagen) {
+        try {
+            // La ruta DEBE empezar desde donde está la carpeta en resources
+            String ruta = "/imagenes/avatares/" + nombreImagen;
+
+            var recurso = getClass().getResource(ruta);
+
+            if (recurso != null) {
+                Image img = new Image(recurso.toExternalForm());
+                circuloAvatar.setFill(new ImagePattern(img));
+            } else {
+                // Esto te ayudará a ver en consola qué nombre está fallando exactamente
+                System.err.println("No se encontró el archivo: " + ruta);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al cargar avatar: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para abrir la ventana de modificar cuenta.
+     * Vincula este método al MenuItem "Mi Cuenta" en el FXML.
+     */
+    @FXML
+    public void abrirMiCuenta() {
+        try {
+            // Asegúrate de que el nombre del FXML sea exactamente el mismo que tienes en tu carpeta
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/modificar_usuario.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Configuración de mi cuenta");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+
+            // Usamos showAndWait para que, al cerrar la ventana de edición,
+            // el código de abajo se ejecute y refresque el avatar.
+            stage.showAndWait();
+            actualizarAvatarUsuario();
+
+        } catch (IOException e) {
+            System.err.println("No se pudo abrir la pantalla de cuenta: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
 
 
     // --- EL BOTÓN PRINCIPAL DE GENERAR MENÚ ---
