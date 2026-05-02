@@ -108,26 +108,26 @@ public class ModificarUsuarioController {
     public void guardarCambios(ActionEvent event) {
         UsuarioDto usuarioActual = Sesion.getUsuario();
 
-
+        // 1. Traducir dieta
         String dietaBD = MAPA_DIETAS.getOrDefault(comboDieta.getValue(), "none");
+
+        // 2. Procesar intolerancias (QUITAMOS EL ESPACIO EN EL JOINING)
         String intoleranciasBD = comboIntolerancias.getCheckModel().getCheckedItems()
                 .stream()
                 .map(item -> MAPA_INTOLERANCIAS.getOrDefault(item, item.toLowerCase()))
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.joining(",")); // Formato: "lactose,nuts"
 
-        String nombre = txtNombre.getText().trim();
-        String email = txtEmail.getText().trim();
-        String password = txtPassword.getText().trim();
+        // 3. Lectura segura de textos
+        String nombre = (txtNombre.getText() == null) ? "" : txtNombre.getText().trim();
+        String email = (txtEmail.getText() == null) ? "" : txtEmail.getText().trim();
+        String password = (txtPassword.getText() == null) ? "" : txtPassword.getText().trim();
 
-        if (nombre.isEmpty() || email.isEmpty()) {
-            mostrarAlerta("Error", "El nombre y email son obligatorios.");
-            return;
-        }
-
+        if (nombre.isEmpty()) nombre = usuarioActual.getNombreUsuario();
+        if (email.isEmpty()) email = usuarioActual.getEmail();
+        if (password.isEmpty()) password = usuarioActual.getPassword();
 
         Connection con = ConexionDB.conectar();
         if (con != null) {
-            // Actualizamos por el ID del usuario que tenemos en sesión
             String sql = "UPDATE usuarios SET nombre_usuario=?, email=?, password=?, intolerancias=?, tipo_dieta=?, imagen=? WHERE id=?";
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
                 stmt.setString(1, nombre);
@@ -136,15 +136,19 @@ public class ModificarUsuarioController {
                 stmt.setString(4, intoleranciasBD);
                 stmt.setString(5, dietaBD);
                 stmt.setString(6, this.nombreAvatarSeleccionado);
-                stmt.setInt(7, usuarioActual.getId()); // ¡Importante tener el ID!
+                stmt.setInt(7, usuarioActual.getId());
 
                 if (stmt.executeUpdate() > 0) {
-
+                    // ACTUALIZAMOS EL OBJETO LOCAL
                     usuarioActual.setNombreUsuario(nombre);
                     usuarioActual.setEmail(email);
+                    usuarioActual.setPassword(password); // No olvides actualizar la pass en el objeto
                     usuarioActual.setAvatar(this.nombreAvatarSeleccionado);
                     usuarioActual.setTipoDieta(dietaBD);
                     usuarioActual.setIntolerancias(intoleranciasBD);
+
+                    // ACTUALIZAMOS LA SESIÓN GLOBAL (IMPORTANTE)
+                    Sesion.setUsuario(usuarioActual);
 
                     mostrarAlerta("Éxito", "Tus datos han sido actualizados.");
                 }

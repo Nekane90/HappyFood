@@ -21,6 +21,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.event.ActionEvent;
@@ -40,6 +42,22 @@ import java.util.Set;
 
 
 public class PrincipalController extends  MenuLateralController  {
+
+    private static final Map<String, String> MAPA_DIETAS = Map.of(
+            "Sin Dieta", "none",
+            "Vegana", "vegan",
+            "Vegetariana", "vegetarian",
+            "Sin Gluten", "gluten-free",
+            "Mediterránea", "mediterranean"
+    );
+
+    private static final Map<String, String> MAPA_INTOLERANCIAS = Map.of(
+            "Lactosa", "lactose",
+            "Gluten", "gluten",
+            "Frutos Secos", "nuts",
+            "Marisco", "shellfish",
+            "Huevo", "egg"
+    );
     @FXML
     private GridPane gpMenu;
     @FXML
@@ -104,6 +122,7 @@ public class PrincipalController extends  MenuLateralController  {
     private VBox celdaSeleccionada;
     private String ultimoJsonRecibido;
     private AtomicInteger platosCargados = new AtomicInteger(0);
+
 
 
     @FXML
@@ -190,28 +209,49 @@ public class PrincipalController extends  MenuLateralController  {
         Button btn = (Button) event.getSource();
         btn.setText("Cargando Menú...");
         btn.setDisable(true);
-        capaCarga.setVisible(true); // <--- ACTIVAMOS SPINNER AQUÍ
+        capaCarga.setVisible(true);
+
+        String dietaApi = Sesion.getUsuario().getTipoDieta();
+        String intoleranciasApi = Sesion.getUsuario().getIntolerancias();
+
+        // Debug para que tú mismo veas si la sesión tiene los datos antes de llamar a la API
+        System.out.println("DEBUG SESIÓN - Dieta: " + dietaApi + " | Intolerancias: " + intoleranciasApi);
 
         Thread thread = new Thread(() -> {
             try {
-
                 ApiController api = new ApiController();
-                String resultadoJson = api.obtenerPlanSemanal();
 
-                this.ultimoJsonRecibido = resultadoJson; // Guardamos para el botón de "Guardar"
+                // Enviamos a la API
+                String resultadoJson = api.obtenerPlanSemanal(dietaApi, intoleranciasApi);
 
-                // 2. PROCESAR EN INTERFAZ
+                System.out.println("RESPUESTA DE LA API: " + resultadoJson);
+
+                // Validación de JSON (lo que añadimos antes para evitar el crash)
+                if (resultadoJson == null || !resultadoJson.trim().startsWith("{")) {
+                    Platform.runLater(() -> {
+                        capaCarga.setVisible(false);
+                        btn.setText("Generar Nuevo Menú");
+                        btn.setDisable(false);
+                        mostrarAlerta("Servicio no disponible", "La API está en mantenimiento o la respuesta es inválida.");
+                    });
+                    return;
+                }
+
+                this.ultimoJsonRecibido = resultadoJson;
+
                 Platform.runLater(() -> {
                     procesarMenuCompleto(resultadoJson, misFavoritos);
                     btn.setText("Generar Nuevo Menú");
                     btn.setDisable(false);
+                    // Nota: capaCarga se oculta dentro de procesarMenuCompleto al llegar a 21
                 });
 
             } catch (Exception e) {
                 e.printStackTrace();
                 Platform.runLater(() -> {
-                    capaCarga.setVisible(false); // Si hay error de red, sí lo quitamos
-                    mostrarAlerta("Error de Conexión", "No se pudo conectar con la API de Spoonacular.");
+                    capaCarga.setVisible(false);
+                    mostrarAlerta("Error", "Error de conexión: " + e.getMessage());
+                    btn.setText("Generar Nuevo Menú");
                     btn.setDisable(false);
                 });
             }
@@ -560,6 +600,34 @@ public class PrincipalController extends  MenuLateralController  {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    private String obtenerDietaApi(String dietaBBDD) {
+        // Si no hay dieta o es "Sin Dieta", devolvemos cadena vacía
+        if (dietaBBDD == null || !MAPA_DIETAS.containsKey(dietaBBDD)) return "";
+        return MAPA_DIETAS.get(dietaBBDD);
+    }
+
+    private String obtenerIntoleranciaApi(String intoleranciaBBDD) {
+        if (intoleranciaBBDD == null || !MAPA_INTOLERANCIAS.containsKey(intoleranciaBBDD)) return "";
+        return MAPA_INTOLERANCIAS.get(intoleranciaBBDD);
+    }
+    private String obtenerIntoleranciasMultiplesApi(String intoleranciasBBDD) {
+        if (intoleranciasBBDD == null || intoleranciasBBDD.isEmpty()) return "";
+
+        // 1. Separamos por comas (por si vienen varias: "Lactosa, Gluten")
+        String[] partes = intoleranciasBBDD.split(",");
+        StringBuilder resultado = new StringBuilder();
+
+        for (String parte : partes) {
+            String limpia = parte.trim(); // Quitamos espacios en blanco
+            if (MAPA_INTOLERANCIAS.containsKey(limpia)) {
+                if (resultado.length() > 0) resultado.append(","); // Añadimos coma entre medias
+                resultado.append(MAPA_INTOLERANCIAS.get(limpia));
+            }
+        }
+
+        return resultado.toString(); // Devolverá algo como "lactose,gluten"
     }
 }
 
