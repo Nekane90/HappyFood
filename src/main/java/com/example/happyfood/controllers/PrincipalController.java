@@ -662,6 +662,23 @@ public class PrincipalController extends  MenuLateralController  {
 
         return resultado.toString(); // Devolverá algo como "lactose,gluten"
     }
+
+    @FXML
+    private void abrirNevera(ActionEvent event) {
+        try {
+            Button btn = (Button) event.getSource();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/nevera.fxml"));
+            Parent root = loader.load();
+            NeveraController controller = loader.getController();
+            controller.setMainController(this); // Pasamos la referencia para que pueda cargar el JSON
+
+            Stage stage = new Stage();
+            stage.setTitle("Nevera");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) { e.printStackTrace(); }
+    }
 }
 
 
