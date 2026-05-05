@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -103,7 +104,6 @@ public class MisFavoritosController implements Initializable {
 
         card.getChildren().addAll(img, name);
 
-        // Efecto "Hover" (se agranda un pelín al pasar el ratón)
         card.setOnMouseEntered(e -> card.setScaleX(1.05));
         card.setOnMouseEntered(e -> card.setScaleY(1.05));
         card.setOnMouseExited(e -> card.setScaleX(1.0));
@@ -119,7 +119,6 @@ public class MisFavoritosController implements Initializable {
 
             DetalleRecetaController controller = loader.getController();
 
-            // Le pasamos el objeto DTO completo que ya tenemos
             controller.setReceta(receta);
 
 
@@ -149,7 +148,7 @@ public class MisFavoritosController implements Initializable {
         card.setStyle("-fx-background-color: white; -fx-background-radius: 20; " +
                 "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);");
 
-        // 1. GESTIÓN DE LA IMAGEN
+
         ImageView img = new ImageView();
         String url = receta.getUrlImagen();
         try {
@@ -166,25 +165,20 @@ public class MisFavoritosController implements Initializable {
         img.setFitHeight(130);
         img.setPreserveRatio(true);
 
-        // 2. CREACIÓN DEL TÍTULO (Esto faltaba)
         Label lbTitulo = new Label(receta.getTitulo());
         lbTitulo.setWrapText(true);
         lbTitulo.setTextAlignment(TextAlignment.CENTER);
         lbTitulo.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #1b4332;");
 
-
-        // 4. AÑADIR HIJOS AL CARD (Asegúrate de usar los nombres de las variables creadas arriba)
         card.getChildren().addAll(img, lbTitulo);
 
-        // 5. EVENTO CLICK
         card.setOnMouseClicked(e -> {
             abrirDetalleReceta(receta);
         });
 
-        // Cambia el cursor a una mano al pasar por encima
+
         card.setCursor(Cursor.HAND);
 
-    // Se hace un pelín más grande y resalta la sombra
         card.setOnMouseEntered(e -> {
             card.setScaleX(1.03);
             card.setScaleY(1.03);
@@ -202,10 +196,30 @@ public class MisFavoritosController implements Initializable {
         return card;
     }
 
-    public void volverPantallaPrincipal(ActionEvent event){
-        Stage stage = (Stage) btVolver.getScene().getWindow();
-        stage.close();
+    @FXML
+    public void volverPantallaPrincipal(ActionEvent event) {
+        try {
 
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/principal.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = stage.getScene();
+
+            scene.setRoot(root);
+
+            scene.getStylesheets().clear();
+            scene.getStylesheets().add(getClass().getResource("/com/example/happyfood/estilos.css").toExternalForm());
+
+            stage.setTitle("Happy Food - Menú Principal");
+            stage.setMaximized(true);
+
+        } catch (IOException e) {
+            System.err.println("Error al cargar el FXML: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error al aplicar estilos: " + e.getMessage());
+        }
     }
 
 }
