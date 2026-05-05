@@ -119,7 +119,7 @@
                         <Insets left="15.0" top="15.0" />
                      </HBox.margin>
                   </Button>
-                  <Button id="btVerNevera" fx:id="btVerNevera" alignment="CENTER" contentDisplay="RIGHT" layoutX="25.0" layoutY="25.0" mnemonicParsing="false" prefHeight="77.0" prefWidth="218.0" text="Ver Nevera">
+                  <Button id="btVerNevera" fx:id="btVerNevera" alignment="CENTER" contentDisplay="RIGHT" layoutX="25.0" layoutY="25.0" mnemonicParsing="false" onAction="#abrirNevera" prefHeight="77.0" prefWidth="218.0" text="Ver Nevera">
                      <font>
                         <Font size="20.0" />
                      </font>

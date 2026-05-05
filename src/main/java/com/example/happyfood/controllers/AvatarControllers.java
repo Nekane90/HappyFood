@@ -9,14 +9,14 @@ import javafx.scene.input.MouseEvent;
 
 
 public class AvatarControllers {
-    // 1. Añadimos la variable para guardar la referencia de la pantalla de Alta
-    private AltaUsuarioController altaController;
-    private ModificarUsuarioController modificar;
 
-    // 2. Este es el método que antes te salía en rojo
+    private AltaUsuarioController altaController;
+    private ModificarUsuarioController modificar; // Asegúrate de que el nombre sea 'modificar' o 'controladorModificar' según lo uses
+
     public void setControladorAlta(AltaUsuarioController altaController) {
         this.altaController = altaController;
     }
+
     public void setControladorModificar(ModificarUsuarioController modificar) {
         this.modificar = modificar;
     }
@@ -31,9 +31,14 @@ public class AvatarControllers {
         String url = imgElegida.getUrl();
         String nombreArchivo = url.substring(url.lastIndexOf("/") + 1);
 
+        // LÓGICA PARA ALTA (Ya te funciona)
         if (altaController != null) {
-            // Llamamos al método de la pantalla de Alta pasándole la imagen y el nombre
             altaController.cambiarFotoAvatar(imgElegida, nombreArchivo);
+        }
+
+        // LÓGICA PARA MODIFICAR (Añade esto para que use el nuevo método)
+        if (modificar != null) {
+            modificar.cambiarFotoAvatar(imgElegida, nombreArchivo);
         }
 
         // Cerramos la ventana de avatares

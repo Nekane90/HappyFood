@@ -16,7 +16,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -27,7 +26,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.event.ActionEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
@@ -109,6 +107,8 @@ public class PrincipalController extends  MenuLateralController  {
     @FXML
     private ProgressIndicator spinnerCarga;
     @FXML
+    Button btCargarMenu;
+    @FXML
     private Circle circuloAvatar;
     @FXML
     VBox[][] matrizInterfaz;
@@ -171,36 +171,66 @@ public class PrincipalController extends  MenuLateralController  {
                 {domingoDesayuno, domingoComida, domingoCena}    // Día 6
         };
     }
-    /*// ESTO ES MIOOO(MAIALEN) Q LO TENGO Q TERMINAR
-    public void cargarFotoUsuario() {
+    /**
+     * Carga o refresca el avatar del usuario actual desde la Sesión.
+     */
+    public void actualizarAvatarUsuario() {
         UsuarioDto usuario = Sesion.getUsuario();
-
         if (usuario != null && usuario.getAvatar() != null) {
-            // 1. Quitamos el "/" inicial si getClass().getResource() ya está en la raíz
-            // o lo dejamos si es ruta absoluta desde resources.
-            String nombreFoto = usuario.getAvatar();
-            String ruta = "/com/example/happyfood/imagenes/avatares/" + nombreFoto;
-
-            System.out.println("Intentando cargar: " + ruta); // DEBUG
-
-            try {
-                var recurso = getClass().getResource(ruta);
-
-                if (recurso != null) {
-                    Image img = new Image(recurso.toExternalForm());
-                    circuloAvatar.setFill(new ImagePattern(img));
-                    System.out.println("¡Imagen cargada con éxito!");
-                } else {
-                    System.err.println("ERROR: No se encuentra el archivo en la carpeta resources.");
-                    System.err.println("Asegúrate de que el archivo se llame exactamente: " + nombreFoto);
-                }
-            } catch (Exception e) {
-                System.err.println("Error al crear la imagen: " + e.getMessage());
-            }
+            cargarImagenEnCirculo(usuario.getAvatar());
         } else {
-            System.out.println("Sesión vacía o usuario sin avatar.");
+            // Imagen por defecto si no hay avatar guardado
+            cargarImagenEnCirculo("animal_1.png");
         }
-    }*/
+    }
+
+    private void cargarImagenEnCirculo(String nombreImagen) {
+        try {
+            // La ruta DEBE empezar desde donde está la carpeta en resources
+            String ruta = "/imagenes/avatares/" + nombreImagen;
+
+            var recurso = getClass().getResource(ruta);
+
+            if (recurso != null) {
+                Image img = new Image(recurso.toExternalForm());
+                circuloAvatar.setFill(new ImagePattern(img));
+            } else {
+                // Esto te ayudará a ver en consola qué nombre está fallando exactamente
+                System.err.println("No se encontró el archivo: " + ruta);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al cargar avatar: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para abrir la ventana de modificar cuenta.
+     * Vincula este método al MenuItem "Mi Cuenta" en el FXML.
+     */
+    @FXML
+    public void abrirMiCuenta() {
+        try {
+            // Asegúrate de que el nombre del FXML sea exactamente el mismo que tienes en tu carpeta
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/modificar_usuario.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Configuración de mi cuenta");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+
+            // Usamos showAndWait para que, al cerrar la ventana de edición,
+            // el código de abajo se ejecute y refresque el avatar.
+            stage.showAndWait();
+            actualizarAvatarUsuario();
+
+        } catch (IOException e) {
+            System.err.println("No se pudo abrir la pantalla de cuenta: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
 
 
     // --- EL BOTÓN PRINCIPAL DE GENERAR MENÚ ---
@@ -628,6 +658,23 @@ public class PrincipalController extends  MenuLateralController  {
         }
 
         return resultado.toString(); // Devolverá algo como "lactose,gluten"
+    }
+
+    @FXML
+    private void abrirNevera(ActionEvent event) {
+        try {
+            Button btn = (Button) event.getSource();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/nevera.fxml"));
+            Parent root = loader.load();
+            NeveraController controller = loader.getController();
+            controller.setMainController(this); // Pasamos la referencia para que pueda cargar el JSON
+
+            Stage stage = new Stage();
+            stage.setTitle("Nevera");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     //abrir pantalla mis favoritos
