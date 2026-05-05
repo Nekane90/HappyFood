@@ -46,21 +46,26 @@ public class DetalleRecetaController {
         taReceta.setEditable(false);
         taReceta.setText("Traduciendo receta...");
 
-        if (urlImg != null && !urlImg.isEmpty()) {
-            String urlLimpia = urlImg.trim().replace("http://", "https://");
-            Image img = new Image(urlLimpia, true); // Carga en background
+        // Dentro de initData en DetalleRecetaController.java
+        if (urlImg != null && !urlImg.trim().isEmpty()) {
+            try {
+                String urlLimpia = urlImg.trim().replace("http://", "https://");
+                Image img = new Image(urlLimpia, true); // true = carga en background
+                img.errorProperty().addListener((obs, oldV, isError) -> {
+                    if (isError) {
+                        Platform.runLater(() -> {
+                            imgReceta.setImage(new Image(getClass().getResourceAsStream("/imagenes/logo.png")));
+                        });
+                    }
+                });
+                imgReceta.setImage(img);
 
-            img.errorProperty().addListener((obs, oldV, isError) -> {
-                if (isError) {
-                    // Si salta el error de certificado (PKIX), ponemos el logo local
-                    Platform.runLater(() -> {
-                        imgReceta.setImage(new Image(getClass().getResourceAsStream("/imagenes/logo.png")));
-                        System.out.println("⚠️ Error de certificado/red. Cargando logo local.");
-                    });
-                }
-            });
-
-            imgReceta.setImage(img);
+            } catch (IllegalArgumentException e) {
+                System.err.println("⚠️ URL inválida en Detalle: " + urlImg);
+                imgReceta.setImage(new Image(getClass().getResourceAsStream("/imagenes/logo.png")));
+            }
+        } else {
+            imgReceta.setImage(new Image(getClass().getResourceAsStream("/imagenes/logo.png")));
         }
         // TRADUCCIÓN EN SEGUNDO PLANO
         Thread threadTraduccion = new Thread(() -> {
@@ -74,10 +79,6 @@ public class DetalleRecetaController {
                     instruccionesEn = recetaJson.get("summary").getAsString();
                 }
 
-                // --- TRUCO PARA EVITAR RECORTES ---
-                // 1. Limpiamos HTML
-                // 2. Reemplazamos saltos de línea por puntos o espacios temporales
-                // para que Google no se detenga en la primera línea.
                 String textoLimpio = instruccionesEn.replaceAll("<[^>]*>", " ") // Quitar HTML
                         .replaceAll("\\s+", " ")     // Quitar múltiples espacios/tabs
                         .trim();
@@ -101,7 +102,6 @@ public class DetalleRecetaController {
                 });
 
             } catch (Exception e) {
-                // ... tu catch actual ...
             }
         });
 
@@ -118,15 +118,25 @@ public class DetalleRecetaController {
         actualizarIconoFavorito();
 
         int idUsuario = Sesion.getUsuario().getId();
-
-        // Obtener el ID real de Spoonacular
-
         int idApi = recetaJson.get("id").getAsInt();
-
         String titulo = recetaJson.get("title").getAsString();
-
-        // Aseguramos que la URL sea la que guardamos en la pantalla anterior
         String urlImg = recetaJson.get("image").getAsString();
+
+        // --- NUEVO: Extraer tiempo y dificultad del JSON de la API ---
+        int tiempoAux = 0;
+        if (recetaJson.has("readyInMinutes")) {
+            tiempoAux = recetaJson.get("readyInMinutes").getAsInt();
+        }
+
+        String dificultadAux = "Media";
+        if (recetaJson.has("spoonacularScore")) {
+            double score = recetaJson.get("spoonacularScore").getAsDouble();
+            if (score > 80) dificultadAux = "Fácil";
+            else if (score < 40) dificultadAux = "Difícil";
+        }
+        final int tiempoFinal = tiempoAux;
+        final String dificultadFinal = dificultadAux;
+        // ----------------------------------------------------------
 
         Thread t = new Thread(() -> {
             try {
@@ -134,17 +144,17 @@ public class DetalleRecetaController {
                 RecetaDao recDao = new RecetaDao();
 
                 if (esFavorito) {
-                    // Usamos el idApi real para guardar en nuestra BD
                     RecetaDto receta = new RecetaDto(titulo, urlImg, idApi);
+                    receta.setTiempoPreparacion(tiempoFinal);
+                    receta.setDificultad(dificultadFinal);
+
                     int idLocal = recDao.asegurarRecetaEnBD(receta);
                     favDao.guardarFavorito(idUsuario, idLocal);
-                    System.out.println("❤️ Favorito guardado con ID API: " + idApi);
+                    System.out.println("❤️ Favorito guardado con tiempo: " + tiempoFinal + " y dificultad: " + dificultadFinal);
                 } else {
-                    // Buscamos por el ID real para eliminar
                     int idLocal = recDao.obtenerIdPorApi(idApi);
                     if (idLocal != -1) {
                         favDao.eliminarFavorito(idUsuario, idLocal);
-                        System.out.println("💔 Favorito eliminado con ID API: " + idApi);
                     }
                 }
             } catch (Exception ex) {
@@ -162,8 +172,6 @@ public class DetalleRecetaController {
         icono.setImage(img);
     }
 
-
-
     //Metodo que vuelve atras del boton
 
     public void volverPantallaPrincipal(ActionEvent event){
@@ -175,6 +183,19 @@ public class DetalleRecetaController {
     //getter
     public boolean isEsFavorito() { return esFavorito; }
 
+    public void setReceta(RecetaDto receta) {
+
+        com.google.gson.JsonObject jsonSimulado = new com.google.gson.JsonObject();
+        jsonSimulado.addProperty("id", receta.getIdApi());
+        jsonSimulado.addProperty("title", receta.getTitulo());
+        jsonSimulado.addProperty("image", receta.getUrlImagen());
+        if(receta.getInstrucciones() != null) {
+            jsonSimulado.addProperty("instructions", receta.getInstrucciones());
+        }
+
+        // 2. Llamamos a tu método original que ya hace todo el trabajo de imagen y traducción
+        initData(receta.getTitulo(), receta.getUrlImagen(), jsonSimulado, true);
+    }
 
 
 

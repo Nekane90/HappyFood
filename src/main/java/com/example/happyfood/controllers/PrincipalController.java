@@ -16,6 +16,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.event.ActionEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
@@ -106,8 +108,6 @@ public class PrincipalController extends  MenuLateralController  {
     private VBox domingoCena;
     @FXML
     private ProgressIndicator spinnerCarga;
-    @FXML
-    Button btCargarMenu;
     @FXML
     private Circle circuloAvatar;
     @FXML
@@ -628,6 +628,31 @@ public class PrincipalController extends  MenuLateralController  {
         }
 
         return resultado.toString(); // Devolverá algo como "lactose,gluten"
+    }
+
+    //abrir pantalla mis favoritos
+    @FXML
+    public void abrirMisFavoritos(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/mis_favoritos.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            // Creamos la escena respetando el contenido
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            // Forzamos el redibujado
+            stage.setMaximized(false); // Truco para resetear el estado
+            stage.setMaximized(true);
+
+            stage.setTitle("Mis Favoritos");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 
