@@ -16,6 +16,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -130,10 +131,7 @@ public class PrincipalController extends  MenuLateralController  {
         configurarTitulos();
         matrizInterfaz = obtenerMatrizCeldas();
         configurarMenuComun(menuLateral, this);
-        UsuarioDto usuario = Sesion.getUsuario();
-        if (usuario != null && usuario.getAvatar() != null) {
-            cargarImagenEnCirculo(usuario.getAvatar());
-        }
+        //cargarFotoUsuario();
         // Cargar favoritos al inicio
         new Thread(() -> {
             this.misFavoritos = favoritoDao.obtenerIdsFavoritos(Sesion.getUsuario().getId());
@@ -678,6 +676,31 @@ public class PrincipalController extends  MenuLateralController  {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    //abrir pantalla mis favoritos
+    @FXML
+    public void abrirMisFavoritos(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/mis_favoritos.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            // Creamos la escena respetando el contenido
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            // Forzamos el redibujado
+            stage.setMaximized(false); // Truco para resetear el estado
+            stage.setMaximized(true);
+
+            stage.setTitle("Mis Favoritos");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 
