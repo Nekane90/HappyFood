@@ -651,14 +651,14 @@ public class PrincipalController extends  MenuLateralController  {
         StringBuilder resultado = new StringBuilder();
 
         for (String parte : partes) {
-            String limpia = parte.trim(); // Quitamos espacios en blanco
+            String limpia = parte.trim();
             if (MAPA_INTOLERANCIAS.containsKey(limpia)) {
-                if (resultado.length() > 0) resultado.append(","); // Añadimos coma entre medias
+                if (resultado.length() > 0) resultado.append(",");
                 resultado.append(MAPA_INTOLERANCIAS.get(limpia));
             }
         }
 
-        return resultado.toString(); // Devolverá algo como "lactose,gluten"
+        return resultado.toString();
     }
 
     @FXML
@@ -687,12 +687,10 @@ public class PrincipalController extends  MenuLateralController  {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            // Creamos la escena respetando el contenido
             Scene scene = new Scene(root);
             stage.setScene(scene);
 
-            // Forzamos el redibujado
-            stage.setMaximized(false); // Truco para resetear el estado
+            stage.setMaximized(false);
             stage.setMaximized(true);
 
             stage.setTitle("Mis Favoritos");

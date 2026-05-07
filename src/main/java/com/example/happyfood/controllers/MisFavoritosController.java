@@ -2,6 +2,7 @@ package com.example.happyfood.controllers;
 
 
 import happyDAO.FavoritoDao;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -121,12 +122,18 @@ public class MisFavoritosController implements Initializable {
 
             controller.setReceta(receta);
 
-
             Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Detalle de: " + receta.getTitulo());
+            Scene scene = new Scene(root, 1000, 700);
+            scene.getStylesheets().add(getClass().getResource("/com/example/happyfood/estilos.css").toExternalForm());
+
+            stage.setTitle("Preparación: ");
+            stage.setScene(scene);
+            stage.centerOnScreen();
+            stage.setMaximized(true);
+            // Hacerla modal
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.show();
+            stage.showAndWait();
+            boolean estadoFinal = controller.isEsFavorito();
 
         } catch (IOException e) {
             System.err.println("Error al abrir el detalle de la receta");
@@ -148,7 +155,6 @@ public class MisFavoritosController implements Initializable {
         card.setStyle("-fx-background-color: white; -fx-background-radius: 20; " +
                 "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);");
 
-
         ImageView img = new ImageView();
         String url = receta.getUrlImagen();
         try {
@@ -158,24 +164,38 @@ public class MisFavoritosController implements Initializable {
                 img.setImage(new Image(getClass().getResourceAsStream("/imagenes/logo.png")));
             }
         } catch (Exception e) {
-            System.err.println("⚠️ URL de imagen inválida para: " + receta.getTitulo());
             img.setImage(new Image(getClass().getResourceAsStream("/imagenes/logo.png")));
         }
         img.setFitWidth(180);
         img.setFitHeight(130);
         img.setPreserveRatio(true);
 
-        Label lbTitulo = new Label(receta.getTitulo());
+        // 1. Creamos el Label con el título original (inglés)
+        String tituloOriginal = receta.getTitulo();
+        Label lbTitulo = new Label(tituloOriginal);
         lbTitulo.setWrapText(true);
         lbTitulo.setTextAlignment(TextAlignment.CENTER);
         lbTitulo.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #1b4332;");
+
+        // --- NUEVO: LÓGICA DE TRADUCCIÓN ASÍNCRONA ---
+        new Thread(() -> {
+            try {
+                // Llamamos a tu servicio (sin el sleep de la principal para que sea más rápido)
+                String traducido = TraductorService.traducirFrase(tituloOriginal);
+
+                // Actualizamos el Label en el hilo de la UI
+                Platform.runLater(() -> lbTitulo.setText(traducido));
+            } catch (Exception ex) {
+                System.err.println("❌ No se pudo traducir: " + tituloOriginal);
+            }
+        }).start();
+        // --------------------------------------------
 
         card.getChildren().addAll(img, lbTitulo);
 
         card.setOnMouseClicked(e -> {
             abrirDetalleReceta(receta);
         });
-
 
         card.setCursor(Cursor.HAND);
 
