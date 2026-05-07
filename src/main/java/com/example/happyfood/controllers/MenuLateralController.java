@@ -21,7 +21,7 @@ public abstract class MenuLateralController {
                     // Ahora pasamos mainRef para poder actualizar el avatar al volver
 
                     case "btnSalir" -> item.setOnAction(e -> salir(menuLateral));
-                    // case "btnFavoritos" -> item.setOnAction(e -> abrirFavoritos());
+
                     case "btnCuenta" -> {
                         System.out.println("DEBUG: Intentando abrir cuenta...");
                         item.setOnAction(e -> abrirCuenta(menuLateral, mainRef));
