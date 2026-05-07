@@ -9,10 +9,6 @@ import java.sql.SQLException;
 
 public class RecetaDao {
 
-    /**
-     * Comprueba si la receta de la API ya está en nuestra BD.
-     * Si no está, la inserta. En ambos casos, devuelve el ID de NUESTRA base de datos.
-     */
     public int asegurarRecetaEnBD(RecetaDto recetaAPI) {
         int idLocal = -1;
 
@@ -44,7 +40,13 @@ public class RecetaDao {
      * Inserta los datos de la API en nuestra tabla local y devuelve el ID generado.
      */
     private int insertarRecetaNueva(RecetaDto r) {
-        // Corregido: Quitada la coma extra al final y alineados los 6 campos con los 6 interrogantes
+        System.out.println("=== DAO: Intentando insertar receta ===");
+        System.out.println("Titulo: " + r.getTitulo());
+        System.out.println("Instrucciones: " + (r.getInstrucciones() != null ? "OK" : "VACÍO"));
+        System.out.println("Tiempo: " + r.getTiempoPreparacion());
+        System.out.println("Dificultad: " + r.getDificultad());
+        System.out.println("URL: " + r.getUrlImagen());
+        System.out.println("ID API: " + r.getIdApi());
         String sqlInsert = "INSERT INTO recetas (titulo, instrucciones, tiempo_preparacion, dificultad, imagen_url, id_api) VALUES (?, ?, ?, ?, ?, ?) RETURNING id";
 
         try (Connection con = ConexionDB.conectar();

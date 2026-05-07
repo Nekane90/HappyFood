@@ -99,3 +99,15 @@
 #corazon {
     -fx-margin-left: 10px; /* Separa un poco el corazón del texto */
 }
+
+.grid-pane-principal {
+    -fx-padding: 20;
+}
+
+/* Esta clase la usaremos desde Java para cada tarjeta */
+.tarjeta-receta {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+    -fx-padding: 15;
+}
