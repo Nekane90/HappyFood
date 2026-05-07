@@ -86,55 +86,64 @@ public class ModificarUsuarioController {
     @FXML
     public void guardarCambios(ActionEvent event) {
         UsuarioDto usuarioActual = Sesion.getUsuario();
+        if (usuarioActual == null) return;
 
+        // 1. Capturar valores actuales de la UI
         String nombre = txtNombre.getText().trim();
         String email = txtEmail.getText().trim();
-        // Obtener la contraseña del campo que esté activo en ese momento
         String passwordFinal = btnVerPassword.isSelected() ? txtPasswordVisible.getText() : txtPassword.getText();
 
+        // Capturar Dieta
+        String dietaSeleccionada = comboDieta.getValue();
+        String dietaBD = MAPA_DIETAS.getOrDefault(dietaSeleccionada, "none");
+
+        // Capturar Intolerancias (Forzando la lectura del CheckModel)
+        String intoleranciasBD = comboIntolerancias.getCheckModel().getCheckedItems()
+                .stream()
+                .map(item -> MAPA_INTOLERANCIAS.getOrDefault(item, "none"))
+                .filter(val -> !val.equals("none"))
+                .collect(Collectors.joining(","));
+
+        // Validaciones básicas
         if (nombre.isEmpty() || email.isEmpty() || passwordFinal.isEmpty()) {
             mostrarAlerta("Campos incompletos", "Por favor, rellena todos los campos.");
             return;
         }
 
-        if (!esEmailValido(email)) {
-            mostrarAlerta("Email inválido", "El formato del correo electrónico no es correcto.");
-            return;
-        }
+        // 2. Ejecutar Update
+        String sql = "UPDATE usuarios SET nombre_usuario=?, email=?, password=?, intolerancias=?, tipo_dieta=?, imagen=? WHERE id=?";
 
-        String dietaBD = MAPA_DIETAS.getOrDefault(comboDieta.getValue(), "none");
-        String intoleranciasBD = comboIntolerancias.getCheckModel().getCheckedItems()
-                .stream()
-                .map(item -> MAPA_INTOLERANCIAS.getOrDefault(item, item.toLowerCase()))
-                .collect(Collectors.joining(","));
+        try (Connection con = ConexionDB.conectar();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
 
-        Connection con = ConexionDB.conectar();
-        if (con != null) {
-            String sql = "UPDATE usuarios SET nombre_usuario=?, email=?, password=?, intolerancias=?, tipo_dieta=?, imagen=? WHERE id=?";
-            try (PreparedStatement stmt = con.prepareStatement(sql)) {
-                stmt.setString(1, nombre);
-                stmt.setString(2, email);
-                stmt.setString(3, passwordFinal);
-                stmt.setString(4, intoleranciasBD);
-                stmt.setString(5, dietaBD);
-                stmt.setString(6, this.nombreAvatarSeleccionado);
-                stmt.setInt(7, usuarioActual.getId());
+            stmt.setString(1, nombre);
+            stmt.setString(2, email);
+            stmt.setString(3, passwordFinal);
+            stmt.setString(4, intoleranciasBD);
+            stmt.setString(5, dietaBD);
+            stmt.setString(6, this.nombreAvatarSeleccionado); // Esta variable debe ser actualizada por cambiarFotoAvatar
+            stmt.setInt(7, usuarioActual.getId());
 
-                if (stmt.executeUpdate() > 0) {
-                    usuarioActual.setNombreUsuario(nombre);
-                    usuarioActual.setEmail(email);
-                    usuarioActual.setPassword(passwordFinal);
-                    usuarioActual.setAvatar(this.nombreAvatarSeleccionado);
-                    usuarioActual.setTipoDieta(dietaBD);
-                    usuarioActual.setIntolerancias(intoleranciasBD);
-                    Sesion.setUsuario(usuarioActual);
+            int filasAfectadas = stmt.executeUpdate();
 
-                    mostrarAlerta("Éxito", "Tus datos han sido actualizados correctamente.");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                mostrarAlerta("Error", "Error al guardar en la base de datos.");
+            if (filasAfectadas > 0) {
+                // 3. ¡IMPORTANTE! Actualizar el objeto en Sesión
+                usuarioActual.setNombreUsuario(nombre);
+                usuarioActual.setEmail(email);
+                usuarioActual.setPassword(passwordFinal);
+                usuarioActual.setAvatar(this.nombreAvatarSeleccionado);
+                usuarioActual.setTipoDieta(dietaBD);
+                usuarioActual.setIntolerancias(intoleranciasBD);
+
+                Sesion.setUsuario(usuarioActual);
+
+                mostrarAlerta("Éxito", "Tus datos han sido actualizados correctamente.");
+            } else {
+                mostrarAlerta("Error", "No se pudo actualizar el registro.");
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            mostrarAlerta("Error", "Error de base de datos: " + e.getMessage());
         }
     }
 
