@@ -131,8 +131,7 @@ public class PrincipalController extends  MenuLateralController  {
         configurarTitulos();
         matrizInterfaz = obtenerMatrizCeldas();
         configurarMenuComun(menuLateral, this);
-        //cargarFotoUsuario();
-        // Cargar favoritos al inicio
+        actualizarAvatarUsuario();
         new Thread(() -> {
             this.misFavoritos = favoritoDao.obtenerIdsFavoritos(Sesion.getUsuario().getId());
             cargarUltimoMenuSiExiste();
