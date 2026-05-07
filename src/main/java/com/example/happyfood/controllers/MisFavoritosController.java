@@ -44,18 +44,18 @@ public class MisFavoritosController implements Initializable {
 
 
     private void cargarFavoritos() {
-        System.out.println("DEBUG: Iniciando carga de favoritos..."); // <-- Control 1
+        System.out.println("DEBUG: Iniciando carga de favoritos...");
 
         int idUsuario = Sesion.getUsuario().getId();
-        System.out.println("DEBUG: Buscando favoritos para el usuario ID: " + idUsuario); // <-- Control 2
+        System.out.println("DEBUG: Buscando favoritos para el usuario ID: " + idUsuario);
 
         FavoritoDao favoritoDao = new FavoritoDao();
         List<RecetaDto> misRecetas = favoritoDao.obtenerRecetasFavoritas(idUsuario);
 
         if (misRecetas == null || misRecetas.isEmpty()) {
-            System.out.println("DEBUG: La lista de la base de datos está VACÍA o es NULL."); // <-- Control 3
+            System.out.println("DEBUG: La lista de la base de datos está VACÍA o es NULL.");
         } else {
-            System.out.println("DEBUG: Se han encontrado " + misRecetas.size() + " recetas."); // <-- Control 4
+            System.out.println("DEBUG: Se han encontrado " + misRecetas.size() + " recetas.");
 
             gpMenu.getChildren().clear();
             int columnas = 4;
@@ -63,7 +63,7 @@ public class MisFavoritosController implements Initializable {
             int col = 0;
 
             for (RecetaDto receta : misRecetas) {
-                System.out.println("DEBUG: Pintando receta: " + receta.getTitulo()); // <-- Control 5
+                System.out.println("DEBUG: Pintando receta: " + receta.getTitulo());
                 VBox tarjeta = crearCuadradoReceta(receta);
                 gpMenu.add(tarjeta, col, fila);
 
@@ -76,41 +76,6 @@ public class MisFavoritosController implements Initializable {
         }
         gpMenu.requestLayout(); // Fuerza al Grid a recalcular el espacio
         System.out.println("DEBUG: Layout solicitado para gpMenu");
-    }
-
-    private VBox crearTarjeta(RecetaDto receta) {
-        VBox card = new VBox();
-        card.setAlignment(Pos.CENTER);
-        card.setSpacing(10);
-        card.setPadding(new Insets(15));
-
-        // Estilo de cuadrado blanco con bordes redondeados y sombra
-        card.setStyle("-fx-background-color: white; " +
-                "-fx-background-radius: 15; " +
-                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);");
-
-        card.setPrefSize(220, 220); // Tamaño del cuadrado
-
-        // Imagen
-        ImageView img = new ImageView(new Image(receta.getUrlImagen()));
-        img.setFitHeight(120);
-        img.setFitWidth(180);
-        img.setPreserveRatio(true);
-
-        // Título
-        Label name = new Label(receta.getTitulo());
-        name.setStyle("-fx-font-weight: bold; -fx-text-fill: #1b4332;");
-        name.setWrapText(true);
-        name.setTextAlignment(TextAlignment.CENTER);
-
-        card.getChildren().addAll(img, name);
-
-        card.setOnMouseEntered(e -> card.setScaleX(1.05));
-        card.setOnMouseEntered(e -> card.setScaleY(1.05));
-        card.setOnMouseExited(e -> card.setScaleX(1.0));
-        card.setOnMouseExited(e -> card.setScaleY(1.0));
-
-        return card;
     }
 
     private void abrirDetalleReceta(RecetaDto receta) {
@@ -177,19 +142,16 @@ public class MisFavoritosController implements Initializable {
         lbTitulo.setTextAlignment(TextAlignment.CENTER);
         lbTitulo.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #1b4332;");
 
-        // --- NUEVO: LÓGICA DE TRADUCCIÓN ASÍNCRONA ---
         new Thread(() -> {
             try {
-                // Llamamos a tu servicio (sin el sleep de la principal para que sea más rápido)
+
                 String traducido = TraductorService.traducirFrase(tituloOriginal);
 
-                // Actualizamos el Label en el hilo de la UI
                 Platform.runLater(() -> lbTitulo.setText(traducido));
             } catch (Exception ex) {
                 System.err.println("❌ No se pudo traducir: " + tituloOriginal);
             }
         }).start();
-        // --------------------------------------------
 
         card.getChildren().addAll(img, lbTitulo);
 

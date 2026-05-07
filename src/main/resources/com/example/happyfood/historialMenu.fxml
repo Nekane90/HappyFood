@@ -18,14 +18,6 @@
                   <Insets bottom="20.0" left="250.0" top="20.0" />
                </HBox.margin>
             </Label>
-            <ImageView fitHeight="99.0" fitWidth="118.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../imagenes/logo.png" />
-               </image>
-               <HBox.margin>
-                  <Insets left="150.0" />
-               </HBox.margin>
-            </ImageView>
          </children></HBox>
       <ListView id="listMenus" fx:id="listMenus" layoutX="110.0" layoutY="91.0" prefHeight="339.0" prefWidth="566.0" />
       <Button fx:id="btCargarMenu" layoutX="110.0" layoutY="482.0" mnemonicParsing="false" onAction="#cargarPlanSeleccionado" prefHeight="77.0" prefWidth="218.0" text="Cargar Menú">
@@ -36,5 +28,15 @@
          <font>
             <Font size="20.0" />
          </font></Button>
+      <Button fx:id="btExportarPdf" layoutX="676.0" layoutY="217.0" mnemonicParsing="false" onAction="#handleExportarPDF" prefHeight="87.0" prefWidth="146.0" text="Exportar Pdf">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Button>
+      <ImageView fitHeight="127.0" fitWidth="124.0" layoutX="687.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../imagenes/logo.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
