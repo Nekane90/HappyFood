@@ -1,5 +1,7 @@
 package com.example.happyfood.controllers;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import happyDAO.FavoritoDao;
@@ -16,8 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
-
-
+import javax.swing.*;
 
 
 public class DetalleRecetaController {
@@ -32,6 +33,10 @@ public class DetalleRecetaController {
     private Button btVolver;
     @FXML
     private Button btFavorito;
+    @FXML
+    private JLabel lbTiempo;
+    @FXML
+    private JLabel lbCalorias;
 
     private boolean esFavorito;
     private JsonObject recetaJson;
@@ -83,6 +88,24 @@ public class DetalleRecetaController {
                     System.out.println("✅ JSON actualizado con detalles completos.");
                 }
 
+                // --- EXTRAER DATOS NUEVOS ---
+                String tiempo = "N/A";
+                if (this.recetaJson.has("readyInMinutes")) {
+                    tiempo = this.recetaJson.get("readyInMinutes").getAsString() + " min";
+                }
+
+                String calorias = "N/A";
+                // Spoonacular suele meter los nutrientes dentro de un objeto "nutrition" -> "nutrients"
+                if (this.recetaJson.has("nutrition")) {
+                    JsonArray nutrients = this.recetaJson.getAsJsonObject("nutrition").getAsJsonArray("nutrients");
+                    for (JsonElement n : nutrients) {
+                        if (n.getAsJsonObject().get("name").getAsString().equals("Calories")) {
+                            calorias = n.getAsJsonObject().get("amount").getAsString() + " kcal";
+                            break;
+                        }
+                    }
+                }
+
                 // 2. A partir de aquí, usa 'this.recetaJson' para todo
                 String tituloEs = TraductorService.traducirFrase(titulo);
 
@@ -92,6 +115,8 @@ public class DetalleRecetaController {
                 } else {
                     instruccionesEn = this.recetaJson.get("summary").getAsString();
                 }
+                final String tiempoFinal = tiempo;
+                final String calFinal = calorias;
 
                 String textoLimpio = instruccionesEn.replaceAll("<[^>]*>", " ").replaceAll("\\s+", " ").trim();
                 String instruccionesEs = TraductorService.traducirFrase(textoLimpio);
@@ -99,6 +124,8 @@ public class DetalleRecetaController {
                 Platform.runLater(() -> {
                     lbTitulo.setText(tituloEs);
                     taReceta.setText(instruccionesEs.replace(". ", ".\n\n"));
+                    if (lbTiempo != null) lbTiempo.setText(tiempoFinal);
+                    if (lbCalorias != null) lbCalorias.setText(calFinal);
                 });
 
             } catch (Exception e) {
@@ -216,7 +243,7 @@ public class DetalleRecetaController {
             jsonSimulado.addProperty("instructions", receta.getInstrucciones());
         }
 
-        // 2. Llamamos a tu método original que ya hace todo el trabajo de imagen y traducción
+        // Llamamos al  método original que ya hace todo el trabajo de imagen y traducción
         initData(receta.getTitulo(), receta.getUrlImagen(), jsonSimulado, true);
     }
 
