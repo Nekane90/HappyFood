@@ -50,8 +50,28 @@
          <children>
             <ImageView id="imgReceta" fx:id="imgReceta" fitHeight="209.0" fitWidth="263.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
-                  <Insets bottom="50.0" left="30.0" right="50.0" top="100.0" />
+                  <Insets bottom="50.0" left="30.0" right="50.0" top="50.0" />
                </VBox.margin></ImageView>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label fx:id="lbTituloTiempo" prefHeight="58.0" prefWidth="330.0" text="Tiempo (min) :">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="50.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="lbTiempo" prefHeight="58.0" prefWidth="264.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets right="50.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
          </children>
       </VBox>
    </left>
@@ -66,7 +86,7 @@
                   <Image url="@../../../imagenes/logo.png" />
                </image>
             </ImageView>
-            <Label id="lbTitulo" fx:id="lbTitulo" alignment="CENTER" prefHeight="120.0" prefWidth="1200.0" wrapText="true" stylesheets="@estilos.css" textAlignment="CENTER" textFill="#2c5f56">
+            <Label id="lbTitulo" fx:id="lbTitulo" alignment="CENTER" prefHeight="120.0" prefWidth="1200.0" stylesheets="@estilos.css" textAlignment="CENTER" textFill="#2c5f56" wrapText="true">
                <font>
                   <Font size="30.0" />
                </font>

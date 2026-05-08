@@ -203,36 +203,6 @@ public class PrincipalController extends  MenuLateralController  {
         }
     }
 
-    /**
-     * Método para abrir la ventana de modificar cuenta.
-     * Vincula este método al MenuItem "Mi Cuenta" en el FXML.
-     */
-    @FXML
-    public void abrirMiCuenta() {
-        try {
-            // Asegúrate de que el nombre del FXML sea exactamente el mismo que tienes en tu carpeta
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/modificar_usuario.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Configuración de mi cuenta");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-
-            // Usamos showAndWait para que, al cerrar la ventana de edición,
-            // el código de abajo se ejecute y refresque el avatar.
-            stage.showAndWait();
-            actualizarAvatarUsuario();
-
-        } catch (IOException e) {
-            System.err.println("No se pudo abrir la pantalla de cuenta: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-
-
-
     // --- EL BOTÓN PRINCIPAL DE GENERAR MENÚ ---
     @FXML
     private void onBotonGenerarClick(ActionEvent event) {
