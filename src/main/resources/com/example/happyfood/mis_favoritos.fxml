@@ -32,6 +32,9 @@
                             <font>
                                 <Font name="Book Antiqua" size="45.0" />
                             </font>
+                     <HBox.margin>
+                        <Insets right="70.0" />
+                     </HBox.margin>
                         </Label>
 
                         <Region HBox.hgrow="ALWAYS" />
