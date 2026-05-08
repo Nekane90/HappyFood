@@ -23,6 +23,9 @@ public class Launcher extends Application {
         stage.show();
     }
 
+
+
+    
     public static void main(String[] args) {
         launch(); // Lanza la aplicación (esto llamará automáticamente a start)
     }

@@ -77,6 +77,19 @@
                   <Insets />
                </VBox.margin>
             </Label>
+             <Button fx:id="btEscuchar" mnemonicParsing="false" onAction="#btnEscucharReceta" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                 <HBox.margin>
+                     <!-- Aumentamos el margen derecho (right) a 50 para que se aleje de la esquina -->
+                     <Insets right="40.0" top="10.0" />
+                 </HBox.margin>
+                 <graphic>
+                     <ImageView fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true">
+                         <image>
+                             <Image url="@../../../imagenes/altavoz.png" />
+                         </image>
+                     </ImageView>
+                 </graphic>
+             </Button>
          </children>
       </HBox>
    </top>

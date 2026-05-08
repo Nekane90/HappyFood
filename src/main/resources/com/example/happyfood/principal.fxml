@@ -194,6 +194,7 @@
             </HBox>
          </bottom>
       </BorderPane>
+
       <VBox id="capaCarga" fx:id="capaCarga" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: rgba(255, 255, 255, 0.7);" visible="false">
          <children>
             <ImageView fitHeight="228.0" fitWidth="264.0" pickOnBounds="true" preserveRatio="true">

@@ -36,16 +36,17 @@
 
                         <Region HBox.hgrow="ALWAYS" />
 
-                        <MenuButton fx:id="menuLateral" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Cuenta">
+
+                        <MenuButton id="menuLateral" fx:id="menuLateral" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: transparent;">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Mi Perfil" />
-                                <MenuItem mnemonicParsing="false" text="Cerrar Sesión" />
+                                <MenuItem id="btnCuenta" fx:id="btnCuenta" mnemonicParsing="false"  text="Mi Cuenta" />
+                                <MenuItem id="btnSalir" fx:id="btnSalir" mnemonicParsing="false" text="Salir" />
                             </items>
                             <graphic>
-                                <Circle fill="WHITE" radius="25.0" stroke="#1b4332" />
+                                <Circle fx:id="circuloAvatar" radius="35.0" stroke="#1b4332" strokeType="INSIDE" strokeWidth="2.0" />
                             </graphic>
                             <HBox.margin>
-                                <Insets right="20.0" />
+                                <Insets right="30.0" />
                             </HBox.margin>
                         </MenuButton>
                     </children>

@@ -2,6 +2,7 @@ package com.example.happyfood.controllers;
 
 
 import happyDAO.FavoritoDao;
+import happyDTO.UsuarioDto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,10 +15,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.TextAlignment;
 
 import happyDTO.RecetaDto;
@@ -29,16 +33,19 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class MisFavoritosController implements Initializable {
+public class MisFavoritosController extends MenuLateralController implements Initializable,AvatarActualizable{
 
     @FXML
     private GridPane gpMenu;
     @FXML
     private Button btVolver;
-
+    @FXML private Circle circuloAvatar;
+    @FXML private MenuButton menuLateral;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarFavoritos();
+        configurarMenuComun(menuLateral, this);
+        actualizarAvatarUsuario();
     }
 
 
@@ -75,6 +82,30 @@ public class MisFavoritosController implements Initializable {
         }
         gpMenu.requestLayout(); // Fuerza al Grid a recalcular el espacio
         System.out.println("DEBUG: Layout solicitado para gpMenu");
+    }
+    public void actualizarAvatarUsuario() {
+        UsuarioDto usuario = Sesion.getUsuario();
+        if (usuario != null && usuario.getAvatar() != null) {
+            cargarImagenEnCirculo(usuario.getAvatar());
+        } else {
+            cargarImagenEnCirculo("animal_1.png");
+        }
+    }
+    @FXML
+
+
+
+    private void cargarImagenEnCirculo(String nombreImagen) {
+        try {
+            String ruta = "/imagenes/avatares/" + nombreImagen;
+            var recurso = getClass().getResource(ruta);
+            if (recurso != null) {
+                Image img = new Image(recurso.toExternalForm());
+                circuloAvatar.setFill(new ImagePattern(img));
+            }
+        } catch (Exception e) {
+            System.err.println("Error en avatar: " + e.getMessage());
+        }
     }
 
     private VBox crearTarjeta(RecetaDto receta) {
@@ -221,5 +252,6 @@ public class MisFavoritosController implements Initializable {
             System.err.println("Error al aplicar estilos: " + e.getMessage());
         }
     }
+
 
 }

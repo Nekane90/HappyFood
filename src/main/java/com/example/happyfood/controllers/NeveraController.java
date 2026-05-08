@@ -33,45 +33,40 @@ public class NeveraController implements Initializable {
     private final String API_KEY = "0508d38ac42c4b7e9011e615ee80611a";
     private final String BASE_IMAGE_URL = "https://spoonacular.com/cdn/ingredients_100x100/";
 
-    // Aquí guardamos los nombres de lo que el usuario ha seleccionado
     private List<String> miDespensa = new ArrayList<>();
     private PrincipalController mainController;
 
     public void setMainController(PrincipalController main) {
         this.mainController = main;
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("Nevera inicializando...");
-
-        // Usamos un hilo para esperar un momento antes de cargar los ingredientes iniciales
-        Thread delay = new Thread(() -> {
-            try {
-                Thread.sleep(1000); // Espera 1 segundo
-                System.out.println("Cargando ingredientes iniciales ahora...");
-                cargarIngredienteDesdeAPI("milk,egg,cheese,tomato,apple");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-        delay.setDaemon(true);
-        delay.start();
+        // Carga inicial de cortesía
+        cargarIngredienteDesdeAPI("milk,egg,cheese,tomato,apple");
     }
 
     @FXML
     void añadirIngrediente() {
-        String query = txtBuscador.getText().trim();
-        if (!query.isEmpty()) {
-            cargarIngredienteDesdeAPI(query);
-            txtBuscador.clear();
+        String queryEs = txtBuscador.getText().trim();
+        if (!queryEs.isEmpty()) {
+            // Traducimos de Español a Inglés para que la API lo encuentre
+            Thread thread = new Thread(() -> {
+                String queryEn = TraductorService.traducirAIngles(queryEs);
+                Platform.runLater(() -> {
+                    cargarIngredienteDesdeAPI(queryEn);
+                    txtBuscador.clear();
+                });
+            });
+            thread.start();
         }
     }
 
-    private void cargarIngredienteDesdeAPI(String query) {
+    private void cargarIngredienteDesdeAPI(String queryEn) {
         Thread thread = new Thread(() -> {
             try {
                 String urlS = "https://api.spoonacular.com/food/ingredients/search?query="
-                        + query.toLowerCase().replace(" ", "%20")
+                        + queryEn.toLowerCase().replace(" ", "%20")
                         + "&number=5&apiKey=" + API_KEY;
 
                 HttpClient client = HttpClient.newHttpClient();
@@ -85,97 +80,9 @@ public class NeveraController implements Initializable {
                     Platform.runLater(() -> {
                         for (int i = 0; i < results.size(); i++) {
                             JsonObject ing = results.get(i).getAsJsonObject();
-                            String nombre = ing.get("name").getAsString();
+                            String nombreEn = ing.get("name").getAsString();
                             String imagen = BASE_IMAGE_URL + ing.get("image").getAsString();
-
-                            dibujarIngrediente(nombre, imagen);
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
-    }
-
-    private void dibujarIngrediente(String nombre, String urlImagen) {
-        // Creamos la tarjeta visual
-        VBox card = new VBox(5);
-        card.setAlignment(Pos.CENTER);
-        String baseStyle = "-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 10; " +
-                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2); -fx-cursor: hand;";
-        card.setStyle(baseStyle);
-
-        // Intentamos cargar la imagen
-        ImageView iv = new ImageView();
-        try {
-            Image img = new Image(urlImagen, true); // Carga asíncrona
-            iv.setImage(img);
-            iv.setFitWidth(55);
-            iv.setFitHeight(55);
-            iv.setPreserveRatio(true);
-        } catch (Exception e) {
-            System.out.println("Error con la imagen de " + nombre);
-        }
-
-        Label lbl = new Label(nombre.toUpperCase());
-        lbl.setStyle("-fx-font-weight: bold; -fx-font-size: 10px;");
-
-        card.getChildren().addAll(iv, lbl);
-
-        // Evento de selección (Borde verde)
-        card.setOnMouseClicked(e -> {
-            if (miDespensa.contains(nombre)) {
-                miDespensa.remove(nombre);
-                card.setStyle(baseStyle);
-            } else {
-                miDespensa.add(nombre);
-                card.setStyle(baseStyle + "-fx-border-color: #2d6a4f; -fx-border-width: 3; -fx-border-radius: 12;");
-            }
-            System.out.println("Cesta: " + miDespensa);
-        });
-
-        // ¡CRÍTICO!: Añadir al panel en el hilo de la interfaz
-        Platform.runLater(() -> {
-            panelIngredientes.getChildren().add(card);
-            System.out.println("Dibujado en pantalla: " + nombre);
-        });
-    }
-
-    @FXML
-    void buscarRecetas() {
-        if (miDespensa.isEmpty()) {
-            System.out.println("No has seleccionado ingredientes.");
-            return;
-        }
-
-        String ingredientesParaAPI = String.join(",", miDespensa);
-
-        Thread thread = new Thread(() -> {
-            try {
-                // Nueva URL para buscar RECETAS (no ingredientes)
-                String url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients="
-                        + ingredientesParaAPI + "&number=5&ranking=1&apiKey=" + API_KEY;
-
-                HttpClient client = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                if (response.statusCode() == 200) {
-                    JsonArray recetas = JsonParser.parseString(response.body()).getAsJsonArray();
-
-                    Platform.runLater(() -> {
-                        // Borramos los ingredientes para mostrar los platos (o podrías abrir una ventana nueva)
-                        panelIngredientes.getChildren().clear();
-
-                        for (int i = 0; i < recetas.size(); i++) {
-                            JsonObject receta = recetas.get(i).getAsJsonObject();
-                            String titulo = receta.get("title").getAsString();
-                            String imgPlato = receta.get("image").getAsString();
-
-                            mostrarTarjetaReceta(titulo, imgPlato);
+                            dibujarIngrediente(nombreEn, imagen);
                         }
                     });
                 }
@@ -185,26 +92,102 @@ public class NeveraController implements Initializable {
         thread.start();
     }
 
-    // Método para dibujar los platos encontrados
-    private void mostrarTarjetaReceta(String titulo, String urlImg) {
-        VBox card = new VBox(10);
+    private void dibujarIngrediente(String nombreEn, String urlImagen) {
+        VBox card = new VBox(5);
         card.setAlignment(Pos.CENTER);
-        card.setStyle("-fx-background-color: #f8f9fa; -fx-padding: 15; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
-        card.setPrefWidth(250);
+        String baseStyle = "-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 10; " +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2); -fx-cursor: hand;";
+        card.setStyle(baseStyle);
 
-        ImageView iv = new ImageView(new Image(urlImg, true));
-        iv.setFitWidth(200); iv.setFitHeight(150); iv.setPreserveRatio(true);
+        ImageView iv = new ImageView(new Image(urlImagen, true));
+        iv.setFitWidth(55); iv.setFitHeight(55); iv.setPreserveRatio(true);
 
-        Label lbl = new Label(titulo.toUpperCase());
-        lbl.setWrapText(true);
-        lbl.setAlignment(Pos.CENTER);
-        lbl.setStyle("-fx-font-weight: bold; -fx-text-fill: #1b4332;");
+        // Usamos el método traducirFrase (EN -> ES) de tu compañera
+        Label lbl = new Label("...");
+        lbl.setStyle("-fx-font-weight: bold; -fx-font-size: 10px;");
+
+        Thread t = new Thread(() -> {
+            String nombreEs = TraductorService.traducirFrase(nombreEn);
+            Platform.runLater(() -> lbl.setText(nombreEs.toUpperCase()));
+        });
+        t.start();
 
         card.getChildren().addAll(iv, lbl);
-        panelIngredientes.getChildren().add(card);
+
+        card.setOnMouseClicked(e -> {
+            if (miDespensa.contains(nombreEn)) {
+                miDespensa.remove(nombreEn);
+                card.setStyle(baseStyle);
+            } else {
+                miDespensa.add(nombreEn);
+                card.setStyle(baseStyle + "-fx-border-color: #2d6a4f; -fx-border-width: 3; -fx-border-radius: 12;");
+            }
+        });
+
+        Platform.runLater(() -> panelIngredientes.getChildren().add(card));
     }
 
+    @FXML
+    void buscarRecetas() {
+        if (miDespensa.isEmpty()) return;
+        String ingredientes = String.join(",", miDespensa);
 
+        Thread thread = new Thread(() -> {
+            try {
+                String url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients="
+                        + ingredientes + "&number=5&apiKey=" + API_KEY;
+
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonArray recetas = JsonParser.parseString(response.body()).getAsJsonArray();
+                    Platform.runLater(() -> {
+                        panelIngredientes.getChildren().clear();
+                        for (int i = 0; i < recetas.size(); i++) {
+                            JsonObject r = recetas.get(i).getAsJsonObject(); // El objeto completo
+
+                            // Pasamos el objeto 'r' entero al método
+                            mostrarTarjetaReceta(r);
+                        }
+                    });
+                }
+            } catch (Exception e) { e.printStackTrace(); }
+        });
+        thread.start();
+    }
+
+    private void mostrarTarjetaReceta(JsonObject recetaJson) {
+        String tituloEn = recetaJson.get("title").getAsString();
+        String urlImg = recetaJson.get("image").getAsString();
+
+        VBox card = new VBox(10);
+        card.setAlignment(Pos.CENTER);
+        card.setStyle("-fx-background-color: #f8f9fa; -fx-padding: 15; -fx-background-radius: 20; -fx-cursor: hand;");
+        card.setPrefWidth(220);
+
+        ImageView iv = new ImageView(new Image(urlImg, true));
+        iv.setFitWidth(180); iv.setFitHeight(120); iv.setPreserveRatio(true);
+
+        Label lbl = new Label("Traduciendo...");
+        lbl.setWrapText(true);
+        lbl.setStyle("-fx-font-weight: bold; -fx-text-fill: #1b4332;");
+
+        // Traducción del título (EN -> ES) para la tarjeta
+        Thread t = new Thread(() -> {
+            String tituloEs = TraductorService.traducirFrase(tituloEn);
+            Platform.runLater(() -> lbl.setText(tituloEs.toUpperCase()));
+        });
+        t.start();
+
+        card.getChildren().addAll(iv, lbl);
+
+        // --- CLAVE: Al pinchar, abrimos el detalle de tu compañera ---
+        card.setOnMouseClicked(e -> abrirDetalleReceta(recetaJson, lbl.getText()));
+
+        panelIngredientes.getChildren().add(card);
+    }
 
     @FXML
     void limpiarNevera() {
@@ -212,4 +195,66 @@ public class NeveraController implements Initializable {
         miDespensa.clear();
     }
 
+    private void obtenerPreparacion(int id, String tituloEs) {
+        Thread thread = new Thread(() -> {
+            try {
+                // URL para obtener información detallada de la receta
+                String url = "https://api.spoonacular.com/recipes/" + id + "/information?apiKey=" + API_KEY;
+
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonObject detalle = JsonParser.parseString(response.body()).getAsJsonObject();
+
+                    // Sacamos las instrucciones (pueden venir en HTML o texto)
+                    String instruccionesEn = detalle.get("instructions").isJsonNull() ?
+                            "No instructions available." :
+                            detalle.get("instructions").getAsString().replaceAll("<[^>]*>", "");
+
+                    // Usamos el traductor de tu compañera (EN -> ES)
+                    String instruccionesEs = TraductorService.traducirFrase(instruccionesEn);
+
+                    Platform.runLater(() -> {
+                        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+                        alert.setTitle("Preparación: " + tituloEs);
+                        alert.setHeaderText(tituloEs);
+                        alert.setContentText(instruccionesEs);
+                        alert.getDialogPane().setPrefSize(500, 400); // Para que se vea bien el texto largo
+                        alert.showAndWait();
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+    }
+    private void abrirDetalleReceta(JsonObject recetaJson, String tituloEs) {
+        try {
+            // 1. Cargamos el FXML (ajusta el nombre exacto de la vista si es distinto)
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/com/example/happyfood/detalle_receta.fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            // 2. Obtenemos el controlador
+            DetalleRecetaController controller = loader.getController();
+
+            // 3. Pasamos los datos iniciales
+            String urlImg = recetaJson.get("image").getAsString();
+
+            // Llamamos al método de tu compañera que dispara la carga y traducción de pasos
+            controller.initData(tituloEs, urlImg, recetaJson, false);
+
+            // 4. Creamos y mostramos la nueva ventana (Stage)
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("HappyFood - Detalle de Receta");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            System.err.println("Error al abrir DetalleReceta: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

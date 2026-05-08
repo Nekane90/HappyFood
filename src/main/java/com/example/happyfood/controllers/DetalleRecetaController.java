@@ -16,8 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
-
-
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
 public class DetalleRecetaController {
@@ -36,9 +36,20 @@ public class DetalleRecetaController {
     private boolean esFavorito;
     private JsonObject recetaJson;
 
+    @FXML
+    public void initialize() {
+        Platform.runLater(() -> {
+            if (lbTitulo.getScene() != null && lbTitulo.getScene().getWindow() != null) {
+                Stage stage = (Stage) lbTitulo.getScene().getWindow();
+                stage.setOnCloseRequest(event -> Lector.detenerVoz());
+            }
+        });
+    }
+
 
     /// metodo que carga la receta con su imagen
     public void initData(String titulo, String urlImg, JsonObject recetaJson,boolean favoritoInicial) {
+
         this.recetaJson = recetaJson;
         this.esFavorito = favoritoInicial;
         actualizarIconoFavorito();
@@ -109,7 +120,23 @@ public class DetalleRecetaController {
         threadTraduccion.setDaemon(true);
         threadTraduccion.start();
     }
+    @FXML
+    private void btnEscucharReceta() {
+        String titulo = lbTitulo.getText();
+        String contenido = taReceta.getText();
 
+        if (contenido == null || contenido.trim().isEmpty() || contenido.equals("Traduciendo receta...")) {
+            System.out.println("⚠️ No hay texto para leer todavía.");
+            return;
+        }
+
+        // Limpiamos etiquetas y saltos de línea raros
+        String textoParaLeer = (titulo + ". " + contenido).replaceAll("<[^>]*>", "");
+
+        System.out.println("DEBUG: Intentando leer texto de longitud: " + textoParaLeer.length());
+
+        Lector.leerEnVozAlta(textoParaLeer);
+    }
     @FXML
     private void manejarFavorito(ActionEvent event) {
         esFavorito = !esFavorito;
@@ -198,6 +225,7 @@ public class DetalleRecetaController {
 
     //Metodo que vuelve atras del boton
     public void volverPantallaPrincipal(ActionEvent event){
+        Lector.detenerVoz();
         Stage stage = (Stage) btVolver.getScene().getWindow();
         stage.close();
 

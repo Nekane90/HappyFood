@@ -58,5 +58,27 @@ public class TraductorService {
             return texto;
         }
     }
+    public static String traducirAIngles(String texto) {
+        if (texto == null || texto.isEmpty()) return texto;
+        try {
+            // Cambiamos sl=es (español) y tl=en (inglés)
+            String url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q="
+                    + URLEncoder.encode(texto, StandardCharsets.UTF_8);
+            HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
+            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("User-Agent", "Mozilla/5.0").build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                JsonArray json = JsonParser.parseString(response.body()).getAsJsonArray();
+                JsonArray partes = json.get(0).getAsJsonArray();
+                StringBuilder resultado = new StringBuilder();
+                for (int i = 0; i < partes.size(); i++) {
+                    resultado.append(partes.get(i).getAsJsonArray().get(0).getAsString());
+                }
+                return resultado.toString().trim();
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return texto;
+    }
 }
 

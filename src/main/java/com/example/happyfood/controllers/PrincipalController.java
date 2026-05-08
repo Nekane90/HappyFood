@@ -40,9 +40,12 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
+import java.awt.Desktop;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
-
-public class PrincipalController extends  MenuLateralController  {
+public class PrincipalController extends  MenuLateralController implements AvatarActualizable {
 
     private static final Map<String, String> MAPA_DIETAS = Map.of(
             "Sin Dieta", "none",
