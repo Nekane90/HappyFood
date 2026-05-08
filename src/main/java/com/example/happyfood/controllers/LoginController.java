@@ -135,7 +135,7 @@ public class LoginController  {
     }
 
     //metodo para mostrar alerta (messagebox)
-    private void mostrarAlerta(String titulo, String mensaje) {
+    public void mostrarAlerta(String titulo, String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setTitle(titulo);
         alerta.setHeaderText(null);

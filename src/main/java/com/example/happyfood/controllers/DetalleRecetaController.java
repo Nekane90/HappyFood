@@ -1,5 +1,7 @@
 package com.example.happyfood.controllers;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import happyDAO.FavoritoDao;
@@ -19,7 +21,6 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
 public class DetalleRecetaController {
 
     @FXML
@@ -32,6 +33,10 @@ public class DetalleRecetaController {
     private Button btVolver;
     @FXML
     private Button btFavorito;
+    @FXML
+    private javafx.scene.control.Label lbTiempo;
+    @FXML
+    private javafx.scene.control.Label lbCalorias;
 
     private boolean esFavorito;
     private JsonObject recetaJson;
@@ -94,6 +99,13 @@ public class DetalleRecetaController {
                     System.out.println("✅ JSON actualizado con detalles completos.");
                 }
 
+                // --- EXTRAER DATOS NUEVOS ---
+                String tiempo = "N/A";
+                if (this.recetaJson.has("readyInMinutes")) {
+                    tiempo = this.recetaJson.get("readyInMinutes").getAsString() + " min";
+                }
+
+
                 // 2. A partir de aquí, usa 'this.recetaJson' para todo
                 String tituloEs = TraductorService.traducirFrase(titulo);
 
@@ -103,6 +115,7 @@ public class DetalleRecetaController {
                 } else {
                     instruccionesEn = this.recetaJson.get("summary").getAsString();
                 }
+                final String tiempoFinal = tiempo;
 
                 String textoLimpio = instruccionesEn.replaceAll("<[^>]*>", " ").replaceAll("\\s+", " ").trim();
                 String instruccionesEs = TraductorService.traducirFrase(textoLimpio);
@@ -110,6 +123,7 @@ public class DetalleRecetaController {
                 Platform.runLater(() -> {
                     lbTitulo.setText(tituloEs);
                     taReceta.setText(instruccionesEs.replace(". ", ".\n\n"));
+                    if (lbTiempo != null) lbTiempo.setText(tiempoFinal);
                 });
 
             } catch (Exception e) {
@@ -244,7 +258,7 @@ public class DetalleRecetaController {
             jsonSimulado.addProperty("instructions", receta.getInstrucciones());
         }
 
-        // 2. Llamamos a tu método original que ya hace todo el trabajo de imagen y traducción
+        // Llamamos al  método original que ya hace todo el trabajo de imagen y traducción
         initData(receta.getTitulo(), receta.getUrlImagen(), jsonSimulado, true);
     }
 

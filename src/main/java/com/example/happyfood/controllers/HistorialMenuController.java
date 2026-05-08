@@ -131,6 +131,38 @@ public class HistorialMenuController implements Initializable {
         alerta.showAndWait();
     }
 
+    @FXML
+    private void handleExportarPDF() {
+        PlanificadorSemanalDto seleccionado = listMenus.getSelectionModel().getSelectedItem();
+        if (seleccionado != null) {
+            mostrarAlerta("Procesando", "Estamos generando tu PDF. Se abrirá automáticamente al terminar. Lo encontrarás en descargas");
+
+            new Thread(() -> {
+                try {
+                    String jsonBBDD = seleccionado.getJson();
+                    String nombreParaElArchivo = seleccionado.getNombre_menu();
+
+                    // servicio de PDF
+                    PdfService pdfService = new PdfService();
+                    pdfService.generarPdfDesdeJson(nombreParaElArchivo, jsonBBDD);
+
+                    System.out.println("✅ PDF terminado en segundo plano.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        } else {
+            mostrarAlerta("Atención", "Por favor, selecciona un menú de la lista.");
+        }
+    }
+
+    public void mostrarAlerta(String titulo, String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
+    }
 
 }
 

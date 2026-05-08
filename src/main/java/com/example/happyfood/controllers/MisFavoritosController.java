@@ -2,6 +2,7 @@ package com.example.happyfood.controllers;
 
 
 import happyDAO.FavoritoDao;
+import javafx.application.Platform;
 import happyDTO.UsuarioDto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,11 +17,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.TextAlignment;
 
@@ -50,18 +53,18 @@ public class MisFavoritosController extends MenuLateralController implements Ini
 
 
     private void cargarFavoritos() {
-        System.out.println("DEBUG: Iniciando carga de favoritos..."); // <-- Control 1
+        System.out.println("DEBUG: Iniciando carga de favoritos...");
 
         int idUsuario = Sesion.getUsuario().getId();
-        System.out.println("DEBUG: Buscando favoritos para el usuario ID: " + idUsuario); // <-- Control 2
+        System.out.println("DEBUG: Buscando favoritos para el usuario ID: " + idUsuario);
 
         FavoritoDao favoritoDao = new FavoritoDao();
         List<RecetaDto> misRecetas = favoritoDao.obtenerRecetasFavoritas(idUsuario);
 
         if (misRecetas == null || misRecetas.isEmpty()) {
-            System.out.println("DEBUG: La lista de la base de datos está VACÍA o es NULL."); // <-- Control 3
+            System.out.println("DEBUG: La lista de la base de datos está VACÍA o es NULL.");
         } else {
-            System.out.println("DEBUG: Se han encontrado " + misRecetas.size() + " recetas."); // <-- Control 4
+            System.out.println("DEBUG: Se han encontrado " + misRecetas.size() + " recetas.");
 
             gpMenu.getChildren().clear();
             int columnas = 4;
@@ -69,7 +72,7 @@ public class MisFavoritosController extends MenuLateralController implements Ini
             int col = 0;
 
             for (RecetaDto receta : misRecetas) {
-                System.out.println("DEBUG: Pintando receta: " + receta.getTitulo()); // <-- Control 5
+                System.out.println("DEBUG: Pintando receta: " + receta.getTitulo());
                 VBox tarjeta = crearCuadradoReceta(receta);
                 gpMenu.add(tarjeta, col, fila);
 
@@ -108,41 +111,6 @@ public class MisFavoritosController extends MenuLateralController implements Ini
         }
     }
 
-    private VBox crearTarjeta(RecetaDto receta) {
-        VBox card = new VBox();
-        card.setAlignment(Pos.CENTER);
-        card.setSpacing(10);
-        card.setPadding(new Insets(15));
-
-        // Estilo de cuadrado blanco con bordes redondeados y sombra
-        card.setStyle("-fx-background-color: white; " +
-                "-fx-background-radius: 15; " +
-                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);");
-
-        card.setPrefSize(220, 220); // Tamaño del cuadrado
-
-        // Imagen
-        ImageView img = new ImageView(new Image(receta.getUrlImagen()));
-        img.setFitHeight(120);
-        img.setFitWidth(180);
-        img.setPreserveRatio(true);
-
-        // Título
-        Label name = new Label(receta.getTitulo());
-        name.setStyle("-fx-font-weight: bold; -fx-text-fill: #1b4332;");
-        name.setWrapText(true);
-        name.setTextAlignment(TextAlignment.CENTER);
-
-        card.getChildren().addAll(img, name);
-
-        card.setOnMouseEntered(e -> card.setScaleX(1.05));
-        card.setOnMouseEntered(e -> card.setScaleY(1.05));
-        card.setOnMouseExited(e -> card.setScaleX(1.0));
-        card.setOnMouseExited(e -> card.setScaleY(1.0));
-
-        return card;
-    }
-
     private void abrirDetalleReceta(RecetaDto receta) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/detalle_receta.fxml"));
@@ -152,12 +120,18 @@ public class MisFavoritosController extends MenuLateralController implements Ini
 
             controller.setReceta(receta);
 
-
             Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Detalle de: " + receta.getTitulo());
+            Scene scene = new Scene(root, 1000, 700);
+            scene.getStylesheets().add(getClass().getResource("/com/example/happyfood/estilos.css").toExternalForm());
+
+            stage.setTitle("Preparación: ");
+            stage.setScene(scene);
+            stage.centerOnScreen();
+            stage.setMaximized(true);
+            // Hacerla modal
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.show();
+            stage.showAndWait();
+            boolean estadoFinal = controller.isEsFavorito();
 
         } catch (IOException e) {
             System.err.println("Error al abrir el detalle de la receta");
@@ -179,7 +153,6 @@ public class MisFavoritosController extends MenuLateralController implements Ini
         card.setStyle("-fx-background-color: white; -fx-background-radius: 20; " +
                 "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);");
 
-
         ImageView img = new ImageView();
         String url = receta.getUrlImagen();
         try {
@@ -189,24 +162,35 @@ public class MisFavoritosController extends MenuLateralController implements Ini
                 img.setImage(new Image(getClass().getResourceAsStream("/imagenes/logo.png")));
             }
         } catch (Exception e) {
-            System.err.println("⚠️ URL de imagen inválida para: " + receta.getTitulo());
             img.setImage(new Image(getClass().getResourceAsStream("/imagenes/logo.png")));
         }
         img.setFitWidth(180);
         img.setFitHeight(130);
         img.setPreserveRatio(true);
 
-        Label lbTitulo = new Label(receta.getTitulo());
+        // 1. Creamos el Label con el título original (inglés)
+        String tituloOriginal = receta.getTitulo();
+        Label lbTitulo = new Label(tituloOriginal);
         lbTitulo.setWrapText(true);
         lbTitulo.setTextAlignment(TextAlignment.CENTER);
         lbTitulo.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #1b4332;");
+
+        new Thread(() -> {
+            try {
+
+                String traducido = TraductorService.traducirFrase(tituloOriginal);
+
+                Platform.runLater(() -> lbTitulo.setText(traducido));
+            } catch (Exception ex) {
+                System.err.println("❌ No se pudo traducir: " + tituloOriginal);
+            }
+        }).start();
 
         card.getChildren().addAll(img, lbTitulo);
 
         card.setOnMouseClicked(e -> {
             abrirDetalleReceta(receta);
         });
-
 
         card.setCursor(Cursor.HAND);
 

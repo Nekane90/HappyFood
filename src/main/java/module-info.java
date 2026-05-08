@@ -16,6 +16,8 @@ module com.example.happyfood {
     requires com.google.gson;
     requires java.net.http;
     requires jdk.jdi;
+    requires com.github.librepdf.openpdf;
+
     requires freetts;
 
 }

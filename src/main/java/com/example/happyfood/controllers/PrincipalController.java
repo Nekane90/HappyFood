@@ -206,36 +206,6 @@ public class PrincipalController extends  MenuLateralController implements Avata
         }
     }
 
-    /**
-     * Método para abrir la ventana de modificar cuenta.
-     * Vincula este método al MenuItem "Mi Cuenta" en el FXML.
-     */
-    @FXML
-    public void abrirMiCuenta() {
-        try {
-            // Asegúrate de que el nombre del FXML sea exactamente el mismo que tienes en tu carpeta
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/happyfood/modificar_usuario.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Configuración de mi cuenta");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-
-            // Usamos showAndWait para que, al cerrar la ventana de edición,
-            // el código de abajo se ejecute y refresque el avatar.
-            stage.showAndWait();
-            actualizarAvatarUsuario();
-
-        } catch (IOException e) {
-            System.err.println("No se pudo abrir la pantalla de cuenta: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-
-
-
     // --- EL BOTÓN PRINCIPAL DE GENERAR MENÚ ---
     @FXML
     private void onBotonGenerarClick(ActionEvent event) {
@@ -653,14 +623,14 @@ public class PrincipalController extends  MenuLateralController implements Avata
         StringBuilder resultado = new StringBuilder();
 
         for (String parte : partes) {
-            String limpia = parte.trim(); // Quitamos espacios en blanco
+            String limpia = parte.trim();
             if (MAPA_INTOLERANCIAS.containsKey(limpia)) {
-                if (resultado.length() > 0) resultado.append(","); // Añadimos coma entre medias
+                if (resultado.length() > 0) resultado.append(",");
                 resultado.append(MAPA_INTOLERANCIAS.get(limpia));
             }
         }
 
-        return resultado.toString(); // Devolverá algo como "lactose,gluten"
+        return resultado.toString();
     }
 
     @FXML
@@ -689,12 +659,10 @@ public class PrincipalController extends  MenuLateralController implements Avata
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            // Creamos la escena respetando el contenido
             Scene scene = new Scene(root);
             stage.setScene(scene);
 
-            // Forzamos el redibujado
-            stage.setMaximized(false); // Truco para resetear el estado
+            stage.setMaximized(false);
             stage.setMaximized(true);
 
             stage.setTitle("Mis Favoritos");
