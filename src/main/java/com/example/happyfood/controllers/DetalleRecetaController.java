@@ -42,13 +42,21 @@ public class DetalleRecetaController {
     private JsonObject recetaJson;
 
     @FXML
+
     public void initialize() {
+
         Platform.runLater(() -> {
+
             if (lbTitulo.getScene() != null && lbTitulo.getScene().getWindow() != null) {
+
                 Stage stage = (Stage) lbTitulo.getScene().getWindow();
+
                 stage.setOnCloseRequest(event -> Lector.detenerVoz());
+
             }
+
         });
+
     }
 
 
@@ -144,7 +152,7 @@ public class DetalleRecetaController {
             return;
         }
 
-        // Limpiamos etiquetas y saltos de línea raros
+// Limpiamos etiquetas y saltos de línea raros
         String textoParaLeer = (titulo + ". " + contenido).replaceAll("<[^>]*>", "");
 
         System.out.println("DEBUG: Intentando leer texto de longitud: " + textoParaLeer.length());

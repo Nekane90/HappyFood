@@ -13,7 +13,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-
+import javafx.stage.Stage;
+import javafx.scene.control.Button;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
@@ -29,7 +32,8 @@ public class NeveraController implements Initializable {
     private TextField txtBuscador;
     @FXML
     private FlowPane panelIngredientes;
-
+    @FXML
+    private Button btVolver;
     private final String API_KEY = "0508d38ac42c4b7e9011e615ee80611a";
     private final String BASE_IMAGE_URL = "https://spoonacular.com/cdn/ingredients_100x100/";
 
@@ -256,5 +260,10 @@ public class NeveraController implements Initializable {
             System.err.println("Error al abrir DetalleReceta: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+    @FXML
+    public void volverPrincipal(javafx.event.ActionEvent actionEvent) {
+        Stage stage = (Stage) btVolver.getScene().getWindow();
+        stage.close();
     }
 }
