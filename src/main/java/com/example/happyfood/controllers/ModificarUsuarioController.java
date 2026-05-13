@@ -30,7 +30,6 @@ public class ModificarUsuarioController {
     @FXML private Circle circuloVistaPrevia;
     @FXML private Button btVolver;
 
-    // Elementos de contraseña y seguridad
     @FXML private PasswordField txtPassword;
     @FXML private TextField txtPasswordVisible;
     @FXML private ToggleButton btnVerPassword;
@@ -88,7 +87,7 @@ public class ModificarUsuarioController {
         UsuarioDto usuarioActual = Sesion.getUsuario();
         if (usuarioActual == null) return;
 
-        // 1. Capturar valores actuales de la UI
+
         String nombre = txtNombre.getText().trim();
         String email = txtEmail.getText().trim();
         String passwordFinal = btnVerPassword.isSelected() ? txtPasswordVisible.getText() : txtPassword.getText();
@@ -110,7 +109,7 @@ public class ModificarUsuarioController {
             return;
         }
 
-        // 2. Ejecutar Update
+        //  Ejecutar Update
         String sql = "UPDATE usuarios SET nombre_usuario=?, email=?, password=?, intolerancias=?, tipo_dieta=?, imagen=? WHERE id=?";
 
         try (Connection con = ConexionDB.conectar();
@@ -127,7 +126,6 @@ public class ModificarUsuarioController {
             int filasAfectadas = stmt.executeUpdate();
 
             if (filasAfectadas > 0) {
-                // 3. ¡IMPORTANTE! Actualizar el objeto en Sesión
                 usuarioActual.setNombreUsuario(nombre);
                 usuarioActual.setEmail(email);
                 usuarioActual.setPassword(passwordFinal);

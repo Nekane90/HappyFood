@@ -49,14 +49,6 @@ public class LoginController  {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                // --- LOGIN CORRECTO: GUARDAMOS SESIÓN ---
-                /*int id = rs.getInt("id");
-                String dieta = rs.getString("tipo_dieta");
-                String intoleranciasStr = rs.getString("intolerancias");
-                //String nombre = rs.getString("nombre_usuario");
-                Sesion.setUsuario(new UsuarioDto(id, intoleranciasStr, dieta, nombreUsuario));*/
-
-
                     int id = rs.getInt("id");
                     String dieta = rs.getString("tipo_dieta");
                     String intoleranciasStr = rs.getString("intolerancias");

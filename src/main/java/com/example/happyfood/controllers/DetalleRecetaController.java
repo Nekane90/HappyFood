@@ -41,26 +41,8 @@ public class DetalleRecetaController {
     private boolean esFavorito;
     private JsonObject recetaJson;
 
-    @FXML
-
-    public void initialize() {
-
-        Platform.runLater(() -> {
-
-            if (lbTitulo.getScene() != null && lbTitulo.getScene().getWindow() != null) {
-
-                Stage stage = (Stage) lbTitulo.getScene().getWindow();
-
-                stage.setOnCloseRequest(event -> Lector.detenerVoz());
-
-            }
-
-        });
-
-    }
-
-
     /// metodo que carga la receta con su imagen
+    @FXML
     public void initData(String titulo, String urlImg, JsonObject recetaJson,boolean favoritoInicial) {
 
         this.recetaJson = recetaJson;
@@ -114,7 +96,7 @@ public class DetalleRecetaController {
                 }
 
 
-                // 2. A partir de aquí, usa 'this.recetaJson' para todo
+
                 String tituloEs = TraductorService.traducirFrase(titulo);
 
                 String instruccionesEn = "";
@@ -152,7 +134,7 @@ public class DetalleRecetaController {
             return;
         }
 
-// Limpiamos etiquetas y saltos de línea raros
+        // Limpiamos etiquetas y saltos de línea raros
         String textoParaLeer = (titulo + ". " + contenido).replaceAll("<[^>]*>", "");
 
         System.out.println("DEBUG: Intentando leer texto de longitud: " + textoParaLeer.length());

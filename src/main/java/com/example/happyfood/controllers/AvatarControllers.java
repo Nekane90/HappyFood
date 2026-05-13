@@ -11,7 +11,7 @@ import javafx.scene.input.MouseEvent;
 public class AvatarControllers {
 
     private AltaUsuarioController altaController;
-    private ModificarUsuarioController modificar; // Asegúrate de que el nombre sea 'modificar' o 'controladorModificar' según lo uses
+    private ModificarUsuarioController modificar;
 
     public void setControladorAlta(AltaUsuarioController altaController) {
         this.altaController = altaController;
@@ -31,17 +31,16 @@ public class AvatarControllers {
         String url = imgElegida.getUrl();
         String nombreArchivo = url.substring(url.lastIndexOf("/") + 1);
 
-        // LÓGICA PARA ALTA (Ya te funciona)
+        // LÓGICA PARA ALTA
         if (altaController != null) {
             altaController.cambiarFotoAvatar(imgElegida, nombreArchivo);
         }
 
-        // LÓGICA PARA MODIFICAR (Añade esto para que use el nuevo método)
+        // LÓGICA PARA MODIFICAR
         if (modificar != null) {
             modificar.cambiarFotoAvatar(imgElegida, nombreArchivo);
         }
 
-        // Cerramos la ventana de avatares
         Stage stage = (Stage) pulsado.getScene().getWindow();
         stage.close();
     }

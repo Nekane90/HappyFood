@@ -168,7 +168,7 @@ public class MisFavoritosController extends MenuLateralController implements Ini
         img.setFitHeight(130);
         img.setPreserveRatio(true);
 
-        // 1. Creamos el Label con el título original (inglés)
+
         String tituloOriginal = receta.getTitulo();
         Label lbTitulo = new Label(tituloOriginal);
         lbTitulo.setWrapText(true);

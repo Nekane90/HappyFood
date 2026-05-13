@@ -110,11 +110,9 @@ public class HistorialMenuController implements Initializable {
             boolean borradoExitoso = dao.eliminarPlan(seleccionado.getId());
 
             if (borradoExitoso) {
-                // --- ESTA ES LA PARTE CLAVE PARA LA ACTUALIZACIÓN VISUAL ---
+
                 listMenus.getItems().remove(seleccionado);
                 listMenus.getSelectionModel().clearSelection(); // Limpiamos la selección
-
-                // Mensaje de éxito
                 mostrarAlerta("Éxito", "Menú borrado correctamente.", Alert.AlertType.INFORMATION);
             } else {
                 mostrarAlerta("Error", "No se ha podido eliminar el menú de la base de datos.", Alert.AlertType.ERROR);

@@ -61,20 +61,20 @@ public class PdfService{
                 System.err.println("⚠️ Logo no encontrado.");
             }
 
-            // 1. Título de la App centrado
+            //  Título de la App centrado
             Paragraph titulo = new Paragraph("Happy Food", fuenteTituloApp);
-            titulo.setAlignment(Element.ALIGN_CENTER); // <-- Centra el texto
+            titulo.setAlignment(Element.ALIGN_CENTER);
             titulo.setSpacingAfter(10);
             documento.add(titulo);
 
-            // 2. Nombre de la planificación centrado
+            //  Nombre de la planificación centrado
             Paragraph subPlan = new Paragraph("Planificación: " + nombrePlan, fuenteNombrePlan);
-            subPlan.setAlignment(Element.ALIGN_CENTER); // <-- Centra el texto
+            subPlan.setAlignment(Element.ALIGN_CENTER);
             documento.add(subPlan);
 
-            // 3. Fecha de generación centrada
+            //  Fecha de generación centrada
             Paragraph fecha = new Paragraph("Generado el: " + java.time.LocalDate.now(), fuenteNombrePlan);
-            fecha.setAlignment(Element.ALIGN_CENTER); // <-- Centra el texto
+            fecha.setAlignment(Element.ALIGN_CENTER);
             fecha.setSpacingAfter(30);
             documento.add(fecha);
 

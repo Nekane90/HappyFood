@@ -106,7 +106,7 @@ public class NeveraController implements Initializable {
         ImageView iv = new ImageView(new Image(urlImagen, true));
         iv.setFitWidth(55); iv.setFitHeight(55); iv.setPreserveRatio(true);
 
-        // Usamos el método traducirFrase (EN -> ES) de tu compañera
+        // Usamos el método traducirFrase (EN -> ES)
         Label lbl = new Label("...");
         lbl.setStyle("-fx-font-weight: bold; -fx-font-size: 10px;");
 
@@ -187,7 +187,7 @@ public class NeveraController implements Initializable {
 
         card.getChildren().addAll(iv, lbl);
 
-        // --- CLAVE: Al pinchar, abrimos el detalle de tu compañera ---
+
         card.setOnMouseClicked(e -> abrirDetalleReceta(recetaJson, lbl.getText()));
 
         panelIngredientes.getChildren().add(card);
@@ -217,7 +217,7 @@ public class NeveraController implements Initializable {
                             "No instructions available." :
                             detalle.get("instructions").getAsString().replaceAll("<[^>]*>", "");
 
-                    // Usamos el traductor de tu compañera (EN -> ES)
+                    // Usamos el traductor (EN -> ES)
                     String instruccionesEs = TraductorService.traducirFrase(instruccionesEn);
 
                     Platform.runLater(() -> {
@@ -237,20 +237,18 @@ public class NeveraController implements Initializable {
     }
     private void abrirDetalleReceta(JsonObject recetaJson, String tituloEs) {
         try {
-            // 1. Cargamos el FXML (ajusta el nombre exacto de la vista si es distinto)
+
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/com/example/happyfood/detalle_receta.fxml"));
             javafx.scene.Parent root = loader.load();
 
-            // 2. Obtenemos el controlador
             DetalleRecetaController controller = loader.getController();
 
-            // 3. Pasamos los datos iniciales
             String urlImg = recetaJson.get("image").getAsString();
 
-            // Llamamos al método de tu compañera que dispara la carga y traducción de pasos
+            // Llamamos al método que dispara la carga y traducción de pasos
             controller.initData(tituloEs, urlImg, recetaJson, false);
 
-            // 4. Creamos y mostramos la nueva ventana (Stage)
+            //  Creamos y mostramos la nueva ventana (Stage)
             javafx.stage.Stage stage = new javafx.stage.Stage();
             stage.setTitle("HappyFood - Detalle de Receta");
             stage.setScene(new javafx.scene.Scene(root));

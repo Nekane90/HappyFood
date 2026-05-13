@@ -30,14 +30,14 @@ public class AltaUsuarioController {
     @FXML private Circle circuloVistaPrevia;
     @FXML private Button btVolver;
 
-    // Elementos de contraseña y seguridad
+
     @FXML private PasswordField txtPassword;
     @FXML private TextField txtPasswordVisible;
     @FXML private ToggleButton btnVerPassword;
     @FXML private ProgressBar progressFuerza;
     @FXML private Label lblFuerza;
 
-    private String nombreAvatarSeleccionado = "animal_1.png"; // Default para nuevos
+    private String nombreAvatarSeleccionado = "animal_1.png"; // Foto por defecto
 
     private static final Map<String, String> MAPA_DIETAS = Map.of(
             "Sin Dieta", "none", "Vegana", "vegan", "Vegetariana", "vegetarian",

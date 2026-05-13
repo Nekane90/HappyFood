@@ -145,7 +145,7 @@ public class PrincipalController extends  MenuLateralController implements Avata
         String[] dias = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"};
         String[] comidas = {"Desayuno", "Almuerzo", "Cena"};
 
-        // 1. Poner los Días en la fila 0 (empezando en la columna 1)
+        //  Poner los Días en la fila 0 (empezando en la columna 1)
         for (int i = 0; i < dias.length; i++) {
             Label labelDia = new Label(dias[i]);
             labelDia.getStyleClass().add("titulo-grid"); // Aplicamos CSS
@@ -153,7 +153,7 @@ public class PrincipalController extends  MenuLateralController implements Avata
             GridPane.setHalignment(labelDia, HPos.CENTER);
         }
 
-        // 2. Poner las Comidas en la columna 0 (empezando en la fila 1)
+        //  Poner las Comidas en la columna 0 (empezando en la fila 1)
         for (int j = 0; j < comidas.length; j++) {
             Label labelComida = new Label(comidas[j]);
             labelComida.getStyleClass().add("titulo-categoria");
@@ -198,7 +198,7 @@ public class PrincipalController extends  MenuLateralController implements Avata
                 Image img = new Image(recurso.toExternalForm());
                 circuloAvatar.setFill(new ImagePattern(img));
             } else {
-                // Esto te ayudará a ver en consola qué nombre está fallando exactamente
+
                 System.err.println("No se encontró el archivo: " + ruta);
             }
         } catch (Exception e) {
@@ -217,7 +217,7 @@ public class PrincipalController extends  MenuLateralController implements Avata
         String dietaApi = Sesion.getUsuario().getTipoDieta();
         String intoleranciasApi = Sesion.getUsuario().getIntolerancias();
 
-        // Debug para que tú mismo veas si la sesión tiene los datos antes de llamar a la API
+
         System.out.println("DEBUG SESIÓN - Dieta: " + dietaApi + " | Intolerancias: " + intoleranciasApi);
 
         Thread thread = new Thread(() -> {
@@ -229,7 +229,7 @@ public class PrincipalController extends  MenuLateralController implements Avata
 
                 System.out.println("RESPUESTA DE LA API: " + resultadoJson);
 
-                // Validación de JSON (lo que añadimos antes para evitar el crash)
+                // Validación de JSON
                 if (resultadoJson == null || !resultadoJson.trim().startsWith("{")) {
                     Platform.runLater(() -> {
                         capaCarga.setVisible(false);
@@ -246,7 +246,7 @@ public class PrincipalController extends  MenuLateralController implements Avata
                     procesarMenuCompleto(resultadoJson, misFavoritos);
                     btn.setText("Generar Nuevo Menú");
                     btn.setDisable(false);
-                    // Nota: capaCarga se oculta dentro de procesarMenuCompleto al llegar a 21
+
                 });
 
             } catch (Exception e) {
@@ -292,7 +292,7 @@ public class PrincipalController extends  MenuLateralController implements Avata
                     String urlImg = "https://spoonacular.com/recipeImages/" + idApiReal + "-312x231.jpg";
                     VBox celda = matrizInterfaz[i][j];
 
-                    // --- Dibujar la receta con un pequeño respiro para que el GIF no se congele ---
+                    // --- Dibujar la receta para que el GIF no se congele ---
                     int finalI = i; int finalJ = j;
                     Thread hiloDibujo = new Thread(() -> {
                         try {
