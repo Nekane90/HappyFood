@@ -34,7 +34,7 @@ public class NeveraController implements Initializable {
     private FlowPane panelIngredientes;
     @FXML
     private Button btVolver;
-    private final String API_KEY = "0508d38ac42c4b7e9011e615ee80611a";
+    private final String API_KEY = ApiController.API_KEY;
     private final String BASE_IMAGE_URL = "https://spoonacular.com/cdn/ingredients_100x100/";
 
     private List<String> miDespensa = new ArrayList<>();
