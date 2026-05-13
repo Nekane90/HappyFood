@@ -6,7 +6,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class ApiController {
-    private static final String API_KEY = "e12ee1226aa1476f96f3497e8bad1a8e";
+    public static final String API_KEY = "e12ee1226aa1476f96f3497e8bad1a8e";
 
     // URL para generar un plan de comidas semanal
     private static final String URL_PLAN_SEMANAL = "https://api.spoonacular.com/mealplanner/generate?timeFrame=week";
