@@ -1,6 +1,7 @@
 package com.example.happyfood.controllers;
 
 import com.example.happyfood.conexion.ConexionDB;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -52,6 +53,7 @@ public class ModificarUsuarioController {
     public void initialize() {
         // Cargar opciones en los combos
         comboDieta.getItems().addAll("Sin Dieta", "Vegana", "Vegetariana", "Sin Gluten", "Mediterránea");
+        comboIntolerancias.getItems().clear();
         comboIntolerancias.getItems().addAll("Lactosa", "Gluten", "Frutos Secos", "Marisco", "Huevo");
 
         UsuarioDto usuario = Sesion.getUsuario();
@@ -73,12 +75,21 @@ public class ModificarUsuarioController {
             });
 
             // Seleccionar Intolerancias actuales
-            if (usuario.getIntolerancias() != null) {
-                String[] ints = usuario.getIntolerancias().split(",");
-                for (String s : ints) {
-                    comboIntolerancias.getCheckModel().check(traducirAEspanol(s.trim()));
+            Platform.runLater(() -> {
+                if (usuario.getIntolerancias() != null) {
+                    String[] ints = usuario.getIntolerancias().split(",");
+                    for (String s : ints) {
+                        String espanol = traducirAEspanol(s.trim());
+
+                        if (comboIntolerancias.getItems().contains(espanol)) {
+                            comboIntolerancias.getCheckModel().check(espanol);
+                        }
+                    }
                 }
-            }
+            });
+            comboIntolerancias.setMouseTransparent(false);
+            comboIntolerancias.setDisable(false);
+
             evaluarFuerza();
         }
     }
@@ -100,9 +111,12 @@ public class ModificarUsuarioController {
         // Capturar Intolerancias (Forzando la lectura del CheckModel)
         String intoleranciasBD = comboIntolerancias.getCheckModel().getCheckedItems()
                 .stream()
-                .map(item -> MAPA_INTOLERANCIAS.getOrDefault(item, "none"))
-                .filter(val -> !val.equals("none"))
+                .map(item -> MAPA_INTOLERANCIAS.get(item)) // Obtenemos el valor en inglés
+                .filter(val -> val != null) // Filtramos nulos por seguridad
                 .collect(Collectors.joining(","));
+
+
+        if (intoleranciasBD == null) intoleranciasBD = "";
 
         // Validaciones básicas
         if (nombre.isEmpty() || email.isEmpty() || passwordFinal.isEmpty()) {
