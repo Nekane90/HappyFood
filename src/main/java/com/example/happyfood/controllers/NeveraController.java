@@ -138,8 +138,9 @@ public class NeveraController implements Initializable {
 
         Thread thread = new Thread(() -> {
             try {
+                String ingredientesLimpio = ingredientes.toLowerCase().replace(" ", "%20");
                 String url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients="
-                        + ingredientes + "&number=5&apiKey=" + API_KEY;
+                        + ingredientesLimpio + "&number=5&apiKey=" + API_KEY;
 
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
