@@ -117,25 +117,31 @@ public class AltaUsuarioController {
     @FXML
     public void evaluarFuerza() {
         String pass = btnVerPassword.isSelected() ? txtPasswordVisible.getText() : txtPassword.getText();
+
         if (pass == null || pass.isEmpty()) {
             progressFuerza.setVisible(false);
             lblFuerza.setVisible(false);
             return;
         }
+
         progressFuerza.setVisible(true);
         lblFuerza.setVisible(true);
 
         double puntaje = calcularPuntaje(pass);
         progressFuerza.setProgress(puntaje);
 
-        if (pass.length() < 6) {
-            lblFuerza.setText("Seguridad: BAJA");
+        if (pass.length() < 2) {
+            lblFuerza.setText("Seguridad: MUY BAJA");
             lblFuerza.setStyle("-fx-text-fill: #ff4d4d;");
             progressFuerza.setStyle("-fx-accent: #ff4d4d;");
-        } else if (pass.length() < 10) {
+        } else if (pass.length() < 6) {
             lblFuerza.setText("Seguridad: MEDIA");
             lblFuerza.setStyle("-fx-text-fill: #ffdb4d;");
             progressFuerza.setStyle("-fx-accent: #ffdb4d;");
+        } else if (pass.length() < 8) {
+            lblFuerza.setText("Seguridad: BUENA");
+            lblFuerza.setStyle("-fx-text-fill: #4db8ff;");
+            progressFuerza.setStyle("-fx-accent: #4db8ff;");
         } else {
             lblFuerza.setText("Seguridad: ALTA");
             lblFuerza.setStyle("-fx-text-fill: #2eb82e;");
@@ -145,10 +151,11 @@ public class AltaUsuarioController {
 
     private double calcularPuntaje(String pass) {
         double p = 0;
-        if (pass.length() >= 4) p += 0.3;
+        if (pass.length() >= 2) p += 0.2;
+        if (pass.length() >= 6) p += 0.3;
         if (pass.length() >= 8) p += 0.3;
-        if (pass.matches(".*[A-Z].*") && pass.matches(".*[0-9].*")) p += 0.2;
-        if (pass.matches(".*[!@#$%^&*()].*")) p += 0.2;
+        if (pass.matches(".*[A-Z].*") && pass.matches(".*[0-9].*")) p += 0.1;
+        if (pass.matches(".*[!@#$%^&*()].*")) p += 0.1;
         return Math.min(p, 1.0);
     }
 
